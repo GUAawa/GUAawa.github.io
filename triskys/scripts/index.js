@@ -96,7 +96,6 @@ class Point {
             (event.clientX - rect.x) * CONFIGS.CANVAS_WIDTH / rect.width,
             (event.clientY - rect.y) * CONFIGS.CANVAS_HEIGHT / rect.height,
         );
-        console.log(p);
         return p;
     }
     /**
@@ -111,6 +110,8 @@ class Point {
 
 /**
  * 顶点定义的三角形
+ * 
+ * 顶点是可变的，导出量需动态生成，可信时可用动态生成缓存
  */
 class Triangle {
     /**
@@ -122,6 +123,8 @@ class Triangle {
         this.p1 = p1;
         this.p2 = p2;
         this.p3 = p3;
+        this.mass_point = this.get_mass_point(); //赋值是多余的，但是谁叫它好看呢
+        this.area = this.get_area();
     }
     draw(color) {
         context.beginPath();//开始路径
@@ -133,18 +136,96 @@ class Triangle {
         context.fill();
     }
     /**
-     * 
+     * 获取并更新重心
      * @returns {Point} 重心
      */
     get_mass_point(){
-        return this.p1.add(this.p2).add(this.p3).scale(1 / 3);
+        this.mass_point = this.p1.add(this.p2).add(this.p3).scale(1 / 3);
+        return this.mass_point;
+    }
+    /**
+     * 获取并更新面积
+     * @returns {Point} 面积
+     */
+    get_area(){
+        this.area = 0.5*Math.abs(
+            +this.p1.x*(this.p2.y-this.p3.y)
+            +this.p2.x*(this.p3.y-this.p1.y)
+            +this.p3.x*(this.p1.y-this.p2.y)
+        );
+        return this.area;
+    }
+}
+
+/**
+ * 三角形物质
+ * 
+ * 不具备完整的物理属性，用于记录一块物质的一部分的材质，状态等
+ * 
+ * 执行化学职能
+ */
+class MatterTri {
+    /**
+     * 
+     * @param {Triangle} tri 几何三角形
+     * @param {number} density 密度 (暂定，之后可能降格为导出量，并上位替代为材质)
+     */
+    constructor(tri,density){
+        this.tri=tri;
+        this.density=density;
+        
+    }
+    /**
+     * 获取并更新质量
+     * @returns {number} mass
+     * 注意：使用了缓存this.tri.mass
+     */
+    get_mass(){
+        this.mass = this.tri.area * this.density //一般来说，三角形的面积不会改变。这是因为三角形的形状一般不变，因为与其改变形状，我们更倾向于重做三角形
+        return this.mass;
+    }
+}
+
+/**
+ * 一块物质刚体
+ * 
+ * 具有刚体应有的空间性质，与世界进行物理交互
+ * 
+ * 执行物理职能
+ * 
+ * 注意：直接修改三角形物质列表不会触发导出量的更新，建议使用<没做好的函数>
+ */
+class MatterMesh {
+    /**
+     * 
+     * @param {MatterTri[]} mattertri_list 存储三角形物质的列表
+     */
+    constructor(mattertri_list){
+        this.mattertri_list = mattertri_list
+        this.mass = this.get_mass();
+        this.mass_point = this.get_mass_point();
+    }
+    get_mass(){
+        this.mass = 0;
+        for(let mattertri of this.mattertri_list){
+            this.mass += mattertri.mass;
+        }
+        return this.mass;
+    }
+    get_mass_point(){
+        this.mass_point = new Point(0,0);
+        for(let mattertri of this.mattertri_list){
+            this.mass_point = this.mass_point.add(mattertri.tri.mass_point.scale(mattertri.mass));
+        }
+        this.mass_point = this.mass_point.scale(1/this.get_mass());
+        return this.mass_point;
     }
 }
 
 let points = [
-    new Point(111, 222),
-    new Point(333, 444),
-    new Point(10, 333),
+    new Point(1, 0),
+    new Point(2, 1),
+    new Point(0, 2),
 ];
 let tri = new Triangle(
     points[0],
@@ -152,12 +233,16 @@ let tri = new Triangle(
     points[2],
 )
 
-let idx = 0;
-function mainloop() {
+function draw_background(){
     context.beginPath();//开始路径
     context.rect(0,0,CONFIGS.CANVAS_WIDTH,CONFIGS.CANVAS_HEIGHT)
     context.fillStyle = CONFIGS.background_color;
     context.fill();
+}
+
+let idx = 0;
+function mainloop() {
+    draw_background();
 
     if (events.length) {
         points[idx].copy(
