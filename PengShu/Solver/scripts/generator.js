@@ -31,11 +31,13 @@ class Situation {
 
 //generate situations & assess border
 let situations = {};
+let legal_ids = [];
 //#region 
 for (let a = 1; a < 10; a++) {
     for (let x = 1; x < 10; x++) {
         // id:0a0x
         let id = a*100+x;
+        legal_ids.push(id);
         let situation = new Situation(
             id,
             "a|x",
@@ -53,6 +55,7 @@ for (let a = 1; a < 10; a++) {
         for (let x = 1; x < 10; x++) {
             // id:ab0x
             let id = a*1000+b*100+x;
+            legal_ids.push(id);
             let situation = new Situation(
                 id,
                 "ab|x",
@@ -68,6 +71,7 @@ for (let a = 1; a < 10; a++) {
         for (let y = 1; y < 10; y++) {
             // id:0axy
             let id = a*100+x*10+y;
+            legal_ids.push(id);
             let situation = new Situation(
                 id,
                 "a|xy",
@@ -87,6 +91,7 @@ for (let a = 1; a < 10; a++) {
             for (let y = 1; y < 10; y++) {
                 // id:abxy
                 let id = a*1000+b*100+x*10+y;
+                legal_ids.push(id);
                 let situation = new Situation(
                     id,
                     "ab|xy",
@@ -102,39 +107,27 @@ for (let a = 1; a < 10; a++) {
 
 console.log(situations);
 
-function get_id(type,vals_me,vals_enemy){
-    if(type == "a|x"){ //0起
-        return (vals_me[0]-1)*9 + vals_enemy[0]-1;
-    }else if(type == "ab|x"){ //81起
-        return 81+ (vals_me[0]-1)*81 + (vals_me[1]-1)*9 + vals_enemy[0]-1 - (vals_me[0]-1)*vals_me[0]/2;
-    }
-}
-let check = (t,m,e)=>{let s = situations[get_id(t,m,e)];return s.vals_me.toString()+'|'+s.vals_enemy.toString();} //DEBUG
-// for(let s of situations){
-//     if(s.type == "ab|xy" && s.vals_me[0] == 1 && s.vals_me[1] == 1 && s.vals_enemy[0] == 1 && s.vals_enemy[1] == 1){ console.log(s)}
-// }
-
-let transition_table = []; // transition_table[from][to] = has_access:bool
+let transition_table = {}; // transition_table[from][to] = has_access:bool
 // set false to the table
-for(let x=0; x<situations.length ; x++){
-    transition_table.push([]);
-    for(let y=0; y<situations.length;y++){
-        transition_table[x].push(false);
+for(let x=0101; x<=9999 ; x++){
+    transition_table[x]={};
+    for(let y=0101; y<=9999;y++){
+        transition_table[x][y]=false;
     }
 }
 // assign paths
-for(let s of situations){
-    if(s.type == "a|x"){
-        if( s.vals_me[0] + s.vals_enemy[0] == 10) continue; //到头了，不能再下降了
+// for(let s of situations){
+//     if(s.type == "a|x"){
+//         if( s.vals_me[0] + s.vals_enemy[0] == 10) continue; //到头了，不能再下降了
         
-    }else if(s.type == "ab|x"){
+//     }else if(s.type == "ab|x"){
 
-    }else if(s.type == "a|xy"){
+//     }else if(s.type == "a|xy"){
 
-    }else if(s.type == "ab|xy"){
+//     }else if(s.type == "ab|xy"){
 
-    }
-}
+//     }
+// }
 
 
 let have_change = false; //这一轮有没有出现新的评估
