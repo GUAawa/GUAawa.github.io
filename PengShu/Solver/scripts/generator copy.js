@@ -1,13 +1,18 @@
+// id->S;S-\>id 过于复杂
+//建议：严禁S对象，S对象仅用于查询和记录；只运营id；
+//建议：使id漫布0~10000，但是遍历时只对存在的局面遍历
+//建议：使 ab|x 和 ba|x 共存，当做两种局面处理，因我对算力有绝对自信
+
 /**
  * 局面
  * 
- * @property {string} assessment 局面评估: null "w"(winning) "l"(losing) "c"(cycle)
- * @property {number[]} to 该局面下一步可达的局面id列表
- * @property {number[]} from 可达该局面的局面id列表
- * @property {number} id id
- * @property {string} type a|x , ab|x , a|xy , ab|xy
- * @property {number[]} vals_me 增序排列，元素数与类型相符
- * @property {number[]} vals_enemy 增序排列，元素数与类型相符
+ * @param {string} assessment 局面评估: null "w"(winning) "l"(losing) "c"(cycle)
+ * @param {number[]} to 该局面下一步可达的局面id列表
+ * @param {number[]} from 可达该局面的局面id列表
+ * @param {number} id id
+ * @param {string} type a|x , ab|x , a|xy , ab|xy
+ * @param {number[]} vals_me 增序排列，元素数与类型相符
+ * @param {number[]} vals_enemy 增序排列，元素数与类型相符
  */
 class Situation {
     /**
@@ -30,70 +35,67 @@ class Situation {
 }
 
 //generate situations & assess border
-let situations = {};
+let situations = [];
 //#region 
 for (let a = 1; a < 10; a++) {
     for (let x = 1; x < 10; x++) {
-        // id:0a0x
-        let id = a*100+x;
-        let situation = new Situation(
-            id,
-            "a|x",
-            [a],
-            [x]
+        situations.push(
+            new Situation(
+                situations.length,
+                "a|x",
+                [a],
+                [x]
+            )
         )
-        situations[id] = situation;
+
         if (a + x == 10) { //我方可清空
-            situation.assessment = "w";
+            situations.assessment = "w";
         }
     }
 }
 for (let a = 1; a < 10; a++) {
-    for (let b = 1; b < 10; b++) {
+    for (let b = a; b < 10; b++) {
         for (let x = 1; x < 10; x++) {
-            // id:ab0x
-            let id = a*1000+b*100+x;
-            let situation = new Situation(
-                id,
-                "ab|x",
-                [a,b],
-                [x]
+            situations.push(
+                new Situation(
+                    situations.length,
+                    "ab|x",
+                    [a, b],
+                    [x]
+                )
             )
-            situations[id] = situation;
         }
     }
 }
 for (let a = 1; a < 10; a++) {
     for (let x = 1; x < 10; x++) {
-        for (let y = 1; y < 10; y++) {
-            // id:0axy
-            let id = a*100+x*10+y;
-            let situation = new Situation(
-                id,
-                "a|xy",
-                [a],
-                [x,y]
+        for (let y = x; y < 10; y++) {
+            situations.push(
+                new Situation(
+                    situations.length,
+                    "a|xy",
+                    [a],
+                    [x, y]
+                )
             )
-            situations[id] = situation;
             if (a + x == 10 || a + y == 10) { //我方可清空
-                situation.assessment = "w";
+                situations.assessment = "w";
             }
         }
     }
 }
 for (let a = 1; a < 10; a++) {
-    for (let b = 1; b < 10; b++) {
+    for (let b = a; b < 10; b++) {
         for (let x = 1; x < 10; x++) {
-            for (let y = 1; y < 10; y++) {
-                // id:abxy
-                let id = a*1000+b*100+x*10+y;
-                let situation = new Situation(
-                    id,
-                    "ab|xy",
-                    [a,b],
-                    [x,y]
+            for (let y = x; y < 10; y++) {
+                situations.push(
+                    new Situation(
+                        situations.length,
+                        "ab|xy",
+                        [a, b],
+                        [x, y]
+                    )
                 )
-                situations[id] = situation;
             }
         }
     }
