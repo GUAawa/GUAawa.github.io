@@ -1,10 +1,8 @@
-//ALGORITHM
-//#region 
-
+//其实null就是C，我猜的
 /**
  * 局面
  * 
- * @property {string} assessment 局面评估: null "W"(winning) "L"(losing)
+ * @property {string} assessment 局面评估: null "W"(winning) "L"(losing) "C"(cycle)
  * @property {number[]} to 该局面下一步可达的局面id列表
  * @property {number[]} from 可达该局面的局面id列表
  * @property {number} id id
@@ -109,6 +107,13 @@ for (let a = 1; a < 10; a++) {
     }
 }
 //#endregion
+//人工标记situation
+// a|x 型死循环
+situations[902].assessment = "C";
+situations[206].assessment = "C";
+// 杂死循环
+// situations[124].assessment = "C";
+
 
 console.log(situations);
 /**
@@ -255,6 +260,7 @@ while (true) {
         all_assessed = false;
         //rule1 have L in tos, W
         //rule2 all tos are W, L
+        //rule3 as all tos are W or C, choose C
         let win_count = 0;
         let cycle_count = 0;
         for (let t of S.to) {
@@ -267,9 +273,17 @@ while (true) {
             else if (T.assessment == "W") {
                 win_count++;
             }
+            else if (T.assessment == "C") {
+                cycle_count++;
+            }
         }
         if (win_count == S.to.length) {
             S.assessment = "L";
+            have_change = true;
+            break;
+        }
+        else if (win_count+cycle_count == S.to.length) { //else说明win不够了，这里如果满足了cycle就显然不等于0
+            S.assessment = "C";
             have_change = true;
             break;
         }
@@ -319,12 +333,14 @@ function help(s) {
     let assessment = situations[s].assessment;
     let suggestion;
     let decision = "";
-    if (assessment == "L") {
+    if (assessment == null) {
+        suggestion = "我们无力评估，这种情况会在对局进一步发展后得到解决。";
+    } else if (assessment == "L") {
         suggestion = "如果对方很聪明，你会输。期待他失误吧。";
-    } else if (assessment == null){
+    } else if (assessment == "C"){
         suggestion = "你们陷入了循环，如果双方都很聪明，平局。我会引导你不受压制。";
         for (let t of situations[s].to) {
-            if (situations[t].assessment == null) {
+            if (situations[t].assessment == "C") {
                 // console.log(t);
                 decision += t.toString() + "; "
             }
@@ -362,7 +378,3 @@ function help(s) {
 function t(id){
     return [situations[id].assessment,situations[id].to.toString()]
 }
-
-//#endregion
-
-
