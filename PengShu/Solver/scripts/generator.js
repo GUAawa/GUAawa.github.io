@@ -115,9 +115,9 @@ console.log(situations);
  */
 let transition_table = {};
 // set false to the table
-for (let x = 0101; x <= 9999; x++) {
+for (let x = 101; x <= 9999; x++) {
     transition_table[x] = {};
-    for (let y = 0101; y <= 9999; y++) {
+    for (let y = 101; y <= 9999; y++) {
         transition_table[x][y] = false;
     }
 }
@@ -290,9 +290,42 @@ function get_tos(s){
     return l
 }
 
-function analysis_loop(s){ //简单的数学，我们能发现null的唯一解释就是loop，即null的必定是nullloop的一环，自己的tos必然存在null
+function analysis_loop(s,list = []){ //简单的数学，我们能发现null的唯一解释就是loop，即null的必定是nullloop的一环，自己的tos必然存在null
+    if(list.length != 0 && s == list[0]){console.log(1); return list};
+    if(list.length == 0) list.push(s);
     let tos = get_tos(s)
     for(let T of tos){
-        if()
+        if(T.assessment == null){
+            console.log(T.id);
+            list.push(T.id);
+            return analysis_loop(T.id,list);
+        }
     }
 }
+
+function help(s){
+    let assessment = situations[s].assessment;
+    let suggestion;
+    if(assessment == null){
+        suggestion = "我们暂时没有找到定数，这种情况会在对局进一步发展后得到解决。";
+    }else if(assessment == "L"){
+        suggestion = "如果对方很聪明，你会输。期待他失误吧。";
+    }else if(assessment == "W"){
+        suggestion = "下一步："
+        for(let t of situations[s].to){
+            if(situations[t].assessment == "L"){
+                // console.log(t);
+                suggestion += t.toString() + "; "
+            }
+        }
+    }
+    return {
+        assessment,
+        suggestion
+    }
+}
+
+//let i = 0;for(let id of legal_ids){if(situations[id].assessment!=null)i++;}console.log(i);
+//人工记录
+/*
+ */
