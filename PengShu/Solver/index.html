@@ -3,8 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <title>瓜の小破站</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .group {
+            margin-bottom: 20px;
+        }
+        .radio-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+        input[type="number"] {
+            width: 50px;
+            height: 30px;
+            margin: 0 5px;
+            text-align: center;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-height: 100px;
+        }
+        .result p {
+            margin: 5px 0;
+        }
+    </style>
 </head>
 <body>
+    <h2>行动选择器</h2>
+    
+    <div class="group">
+        <div class="radio-group">
+            <input type="radio" id="myTurn" name="turn" checked>
+            <label for="myTurn">我方行动</label>
+        </div>
+        <div>
+            <label for="myNum1">数字 (只有一个时将左侧置0)</label>
+            <input type="number" id="myNum1" min="0" max="9" value="0">
+            <input type="number" id="myNum2" min="0" max="9" value="0">
+        </div>
+    </div>
+    
+    <div class="group">
+        <div class="radio-group">
+            <input type="radio" id="enemyTurn" name="turn">
+            <label for="enemyTurn">敌方行动</label>
+        </div>
+        <div>
+            <label for="enemyNum1">数字 (只有一个时将左侧置0)</label>
+            <input type="number" id="enemyNum1" min="0" max="9" value="0">
+            <input type="number" id="enemyNum2" min="0" max="9" value="0">
+        </div>
+    </div>
+    
+    <button id="analyzeBtn">分析</button>
+    
+    <div class="result">
+        <p id="result1"></p>
+        <p id="result2"></p>
+        <p id="result3"></p>
+    </div>
 </body>
 <script src="./scripts/generator.js"></script>
 </html>
