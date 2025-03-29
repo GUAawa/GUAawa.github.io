@@ -318,7 +318,7 @@ function analysis_loop(s) { //简单的数学，我们能发现null的唯一解�
 function help(s) {
     let assessment = situations[s].assessment;
     let suggestion;
-    let decision = "";
+    let decision = "建议你变为：";
     if (assessment == "L") {
         suggestion = "如果对方很聪明，你会输。期待他失误吧。";
     } else if (assessment == null){
@@ -326,7 +326,7 @@ function help(s) {
         for (let t of situations[s].to) {
             if (situations[t].assessment == null) {
                 // console.log(t);
-                decision += t.toString() + "; "
+                decision += (t%100).toString() + "; "
             }
         }
     } else if (assessment == "W") {
@@ -334,14 +334,21 @@ function help(s) {
         for (let t of situations[s].to) {
             if (situations[t].assessment == "L") {
                 // console.log(t);
-                decision += t.toString() + "; "
+                decision += (t%100).toString() + "; "
             }
         }
     }
+    if(assessment == "W"){
+        assessment = "Winning";
+    }else if(assessment == "L"){
+        assessment = "Losing";
+    }else{
+        assessment = "Cycling";
+    }
     return {
-        assessment,
-        suggestion,
-        decision,
+        assessment:assessment,
+        suggestion:suggestion,
+        decision:decision,
     }
 }
 // let i = 0;for(let id of legal_ids){if(situations[id].assessment!=null)i++;}console.log(i); //已评估数量
@@ -365,3 +372,33 @@ function t(id){
 
 //#endregion
 
+const myNum1box = document.getElementById("myNum1");
+const myNum2box = document.getElementById("myNum2");
+const enemyNum1box = document.getElementById("enemyNum1");
+const enemyNum2box = document.getElementById("enemyNum2");
+const myTurnbox = document.getElementById("myTurn");
+const enemyTurnbox = document.getElementById("enemyTurn");
+const result1box = document.getElementById("result1");
+const result2box = document.getElementById("result2");
+const result3box = document.getElementById("result3");
+
+function analyze(){
+    let a = parseInt(myNum1box.value);
+    let b = parseInt(myNum2box.value);
+    let x = parseInt(enemyNum1box.value);
+    let y = parseInt(enemyNum2box.value);
+    
+    let isMyTurn = myTurnbox.checked;
+
+    let h;
+    if(isMyTurn){
+        h = help(a*1000+b*100+x*10+y);
+    }else{
+        h = help(x*1000+y*100+a*10+b);
+    }
+
+    console.log(h.assessment)
+    result1box.innerText = h.assessment;
+    result2box.innerText = h.suggestion;
+    result3box.innerText = h.decision;
+}
