@@ -115,19 +115,26 @@ for(let x=0101; x<=9999 ; x++){
         transition_table[x][y]=false;
     }
 }
+
+function get_situation(id){
+    return situations[id];
+}
+function get_id(type,vals_me,vals_enemy){
+    if(type == "a|x"){
+        return vals_me[0]*100 + vals_enemy[0];
+    }else if(type == "ab|x"){
+        return vals_me[0]*1000+vals_me[1]*100+vals_enemy[0];
+    }else if(type == "a|xy"){
+        return vals_me[0]*100+vals_enemy[0]*10+vals_enemy[1];
+    }else if(type == "ab|xy"){
+        return vals_me[0]*1000+vals_me[1]*100+vals_enemy[0]*10+vals_enemy[1];
+    }
+}
+
 // assign paths
-// for(let s of situations){
-//     if(s.type == "a|x"){
-//         if( s.vals_me[0] + s.vals_enemy[0] == 10) continue; //到头了，不能再下降了
-        
-//     }else if(s.type == "ab|x"){
+for(let s of legal_ids){
 
-//     }else if(s.type == "a|xy"){
-
-//     }else if(s.type == "ab|xy"){
-
-//     }
-// }
+}
 
 
 let have_change = false; //这一轮有没有出现新的评估
