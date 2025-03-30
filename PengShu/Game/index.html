@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+    <meta charset="UTF-8">
+    <title>瓜の小破站</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .group {
+            margin-bottom: 20px;
+        }
+        .radio-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+        input[type="number"] {
+            width: 50px;
+            height: 30px;
+            margin: 0 5px;
+            text-align: center;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-height: 100px;
+        }
+        #result1 {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+        }
+        #result2 {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+        }
+        #result3 {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <h2>碰数帮助</h2>
+    
+    <div class="group">
+        <div class="radio-group">
+            <input type="radio" id="myTurn" name="turn" checked>
+            <label for="myTurn">甲方行动</label>
+        </div>
+        <div>
+            <label for="myNum1">数字 (只有一个时将左侧置0)</label>
+            <input type="number" id="myNum1" value="1">
+            <input type="number" id="myNum2" value="1">
+        </div>
+    </div>
+    
+    <div class="group">
+        <div class="radio-group">
+            <input type="radio" id="enemyTurn" name="turn">
+            <label for="enemyTurn">乙方行动</label>
+        </div>
+        <div>
+            <label for="enemyNum1">数字 (只有一个时将左侧置0)</label>
+            <input type="number" id="enemyNum1" value="1">
+            <input type="number" id="enemyNum2" value="1">
+        </div>
+    </div>
+    
+    
+    <div class="result">
+        <p id="result1">神奇妙妙</p>
+        <p id="result2">碰数</p>
+        <p id="result3">小游戏</p>
+    </div>
+
+    <script>
+        // 获取所有数字输入框
+        const numberInputs = document.querySelectorAll('input[type="number"]');
+
+        // 为每个数字输入框添加事件监听器
+        numberInputs.forEach(input => {
+            input.addEventListener('input', function() {
+                let value = parseInt(this.value);
+                if (isNaN(value)) {
+                    value = 0; // 如果输入不是数字，设置为0
+                } else if (value > 9) {
+                    value = 0; // 超过9时自动归零
+                } else if (value < 0) {
+                    value = 9; // 小于0时自动变为9
+                }
+                this.value = value;
+            });
+        });
+    </script>
+</body>
+<script src="./scripts/generator.js"></script>
+</html>
