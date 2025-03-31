@@ -87,19 +87,22 @@
         </div>
         <div>
             <label for="enemyNum1">数字 (只有一个时将左侧置0)</label>
-            <input type="number" id="enemyNum1" value="1">
+            <input type="number" id="enemyNum1" value="3">
             <input type="number" id="enemyNum2" value="1">
         </div>
     </div>
-    
+   
+    <button id="newGameBtn" onclick="newGame()">新游戏</button> 
+    <button id="submitBtn" onclick="submit()">提交</button> 
     <button id="analyzeBtn" onclick="analyze()">分析</button>
+    <button id="alignBtn" onclick="align()">对齐网络</button>
     
     <div class="result">
         <p id="result1">局势</p>
         <p id="result2">人话</p>
         <p id="result3">建议</p>
     </div>
-
+    
     <script>
         // 获取所有数字输入框
         const numberInputs = document.querySelectorAll('input[type="number"]');
@@ -121,4 +124,5 @@
     </script>
 </body>
 <script src="./scripts/generator.js"></script>
+<script src="./scripts/online.js"></script>
 </html>
