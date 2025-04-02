@@ -1,60 +1,43 @@
 const data_storage=document.getElementById("data_storage");
 
-async function createOrUpdateText(key, value) {
-    const url = `https://api.textdb.online/update/?key=${encodeURIComponent(key)}&value=${encodeURIComponent(value)}`;
-    try {
-        let response = await fetch(url, {
-            method: 'POST', // 或者使用POST方法
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `key=${encodeURIComponent(key)}&value=${encodeURIComponent(value)}`
-        });
-        let data = await response.json();
-        console.log(data);
-        return data;
-    } catch (error) {
-        console.error('Error:', error);
-    }
+
+function upload(data){
+  const url="https://cn.apihz.cn/api/cunchu/textcc.php?id=10003632&key=2d28bb4369491dd93cccdb543de18b6e&type=1&numid=1&words="+JSON.stringify(data);
+  fetch(url).then((response)=>{
+    console.log(response)
+  })
 }
-async function readText(key,call) {
-    const url = `https://textdb.online/${encodeURIComponent(key)}`;
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        
-        const data = await response.text();
-        console.log(url)
-        call(data);
-        return data;
-    } catch (error) {
-        console.error('Error:', error);
-    }
+function download(){
+  console.log("downloading...");
+  const url="https://cn.apihz.cn/api/cunchu/textcc.php?id=10003632&key=2d28bb4369491dd93cccdb543de18b6e&type=2&numid=1";
+  fetch(url).then((response)=>{
+    console.log(response);
+    return response.json();
+  }).then((obj)=>{
+    console.log(obj);
+    return JSON.parse(obj.words);
+  }).then((data)=>{
+    console.log(data);
+    alignData(data)
+  })
 }
 
 let time=0;
 function newGame(){
+  console.log("submitting(new)...")
   let data={
-    time:0,
+    time:-114,
     myTurn:true,
     vals_me:[1,1],
     vals_enemy:[1,1],
   }
-  createOrUpdateText(
-    'guatxt3347',
-    JSON.stringify(data)
-  )
+  console.log(data);
+  upload(data);
 }
-function align(){
-  readText('guatxt3347',
-  function(dataString){
-    let data=JSON.parse(dataString);
-    console.log('get data:')
-    console.log(data)
+function alignData(data){
     if(data.time==time) return; //这就是我发的
     time=data.time;
+    if(time<0) time=0;
     myNum1box.value=data.vals_me[0];
     myNum2box.value=data.vals_me[1];
     enemyNum1box.value=data.vals_enemy[0];
@@ -62,19 +45,16 @@ function align(){
     myTurnbox.checked=data.myTurn;
     enemyTurnbox.checked=!data.myTurn
   }
-  );
-}
-function submit(){
+function submitData(){
+  console.log("submitting...")
   let data={
     time:time+1,
     myTurn:!(myTurnbox.checked),
     vals_me:[myNum1box.value,myNum2box.value],
     vals_enemy:[enemyNum1box.value,enemyNum2box.value]
-  }
-  console.log('submit data:');
-  console.log(JSON.stringify(data));
-  createOrUpdateText(
-    'guatxt3347',
-    JSON.stringify(data)
-  )
+  };
+  console.log(data);
+  upload(data);
 }
+
+//setInterval(download,12000)
