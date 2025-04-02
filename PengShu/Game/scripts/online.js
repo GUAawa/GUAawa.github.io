@@ -61,4 +61,4 @@ function submitData(){
   upload(data);
 }
 
-//setInterval(download,12000)
+setInterval(download,2000)
