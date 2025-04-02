@@ -15,6 +15,10 @@ function download(){
     return response.json();
   }).then((obj)=>{
     console.log(obj);
+    if(obj.code=="400"){
+      alert("淦，咱玩太快了，服务器ban了咱一分钟。如果你给我充会员咱俩就爽玩");
+      
+    }
     return JSON.parse(obj.words);
   }).then((data)=>{
     console.log(data);
