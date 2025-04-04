@@ -27,7 +27,6 @@ let data = {
         " :D<": " :C<",
     }
 }
-console.log(data);
 
 function getShell(sf) {
     return sf.substring(0, 3);
