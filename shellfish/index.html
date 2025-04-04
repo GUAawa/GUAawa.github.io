@@ -5,6 +5,14 @@
     <title>瓜の小破站</title>
 </head>
 <body>
+    <div>data log</div>
+    <div id="data_log"></div>
+    <script>
+        const data_log = document.getElementById("data_log");
+        setInterval(()=>{
+            data_log.innerHTML = JSON.stringify(data);
+        },500)
+    </script>
 </body>
 <script src="./scripts/main.js"></script>
 </html>
