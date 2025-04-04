@@ -1,7 +1,12 @@
 const aquarium = document.getElementById('aquarium');
 // 矩形范围
-const width = aquarium.offsetWidth;
-const height = aquarium.offsetHeight;
+let width = aquarium.offsetWidth;
+let height = aquarium.offsetHeight;
+
+setInterval(()=>{
+    width = aquarium.offsetWidth;
+    height = aquarium.offsetHeight;
+},5000); //防止变化大小
 
 let last_refresh_time = Date.now();
 
