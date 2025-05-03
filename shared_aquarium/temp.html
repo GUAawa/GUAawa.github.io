@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鱼游动动画</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        #aquarium {
+            width: 400px;
+            height: 300px;
+            border: 2px solid #333;
+            position: relative;
+            background-color: #e0f7ff;
+            overflow: hidden;
+        }
+        #fish {
+            position: absolute;
+            font-size: 24px;
+            font-weight: bold;
+            transition: transform 0.2s ease;
+        }
+    </style>
+</head>
+<body>
+    <div id="aquarium">
+        <div id="fish">:D<</div>
+    </div>
+
+    <script>
+        // 获取DOM元素
+        const aquarium = document.getElementById('aquarium');
+        const fish = document.getElementById('fish');
+
+        // 鱼的初始位置和速度
+        let x = 200;
+        let y = 150;
+        let speedX = -3;
+        let speedY = 2;
+        let direction = 1; // 1 表示向右，-1 表示向左
+
+        // 矩形范围
+        const width = aquarium.offsetWidth;
+        const height = aquarium.offsetHeight;
+
+        // 更新鱼的位置
+        function updateFishPosition() {
+            // 更新位置
+            x += speedX * direction;
+            y += speedY;
+
+            // 检测边界碰撞
+            if (x <= 0 || x >= width - 40) { // 40 是鱼的宽度
+                direction *= -1; // 改变方向
+                fish.style.transform = `scaleX(${direction})`; // 翻转鱼
+            }
+
+            // 检测上下边界碰撞
+            if (y <= 0 || y >= height - 20) { // 20 是鱼的高度
+                speedY *= -1; // 改变垂直方向
+            }
+
+            // 更新鱼的位置
+            fish.style.left = x + 'px';
+            fish.style.top = y + 'px';
+
+            // 随机改变颜色
+            const colors = ['#ff6b6b', '#4ecdc4', '#ffbe0b', '#2a9d8f', '#e9c46a'];
+            fish.style.color = colors[Math.floor(Math.random() * colors.length)];
+
+            // 循环动画
+            requestAnimationFrame(updateFishPosition);
+        }
+
+        // 开始动画
+        updateFishPosition();
+    </script>
+</body>
+</html>
