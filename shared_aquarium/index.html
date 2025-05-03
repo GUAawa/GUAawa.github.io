@@ -7,16 +7,14 @@
 </head>
 <body>
     <div id="aquarium"></div>
-    <div>data log</div>
-    <div id="data_log"></div>
+    <div>
+        <input type="text" id="new_shellfish"/>
+        <input type="button" value="← 扔只shellfish呀~" onclick="new_shellfish_btn()"/>
+    </div>
     <script>
-        const data_log = document.getElementById("data_log");
-        setInterval(()=>{
-            data_log.innerHTML = JSON.stringify(data);
-        },500)
     </script>
 
 </body>
-<script src="./scripts/main.js"></script>
 <script src="./scripts/display.js"></script>
+<script src="./scripts/main.js"></script>
 </html>

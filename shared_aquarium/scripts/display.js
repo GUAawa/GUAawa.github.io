@@ -6,7 +6,7 @@ let height = aquarium.offsetHeight;
 setInterval(()=>{
     width = aquarium.offsetWidth;
     height = aquarium.offsetHeight;
-},5000); //防止变化大小
+},5000); //应对变化大小
 
 let last_refresh_time = Date.now();
 
@@ -46,14 +46,12 @@ class Shellfish{
         this.refreshPhysics(deltatime);
         this.refreshDisplay();
     }
+    kill(){
+        aquarium.removeChild(this.div);
+    }
 }
 
-let shellfishes = [];
-shellfishes.push(new Shellfish(":D<"))
-shellfishes.push(new Shellfish(":D<"))
-shellfishes.push(new Shellfish(":D<"))
-shellfishes.push(new Shellfish(":D<"))
-shellfishes.push(new Shellfish(":D<"))
+let shellfishes = [new Shellfish(":D<"),new Shellfish(":D<"),new Shellfish(":D<")];
 
 setInterval(()=>{
     const now = Date.now();
