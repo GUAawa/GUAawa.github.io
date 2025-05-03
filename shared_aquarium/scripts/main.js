@@ -81,6 +81,17 @@ function addShellfish(str){
 function new_shellfish_btn(){
     addShellfish(document.getElementById('new_shellfish').value);
 }
+function kill_shellfish_btn(){
+    let string = document.getElementById('kill_shellfish').value;
+    for(let i in shellfishes){
+        let sf = shellfishes[i];
+        // console.log(string)
+        let sf_str = sf.sf;
+        if(string == sf_str) {sf.kill(); shellfishes.splice(i,1); break;}
+    }
+    console.log(shellfishes)
+    uploadShellfishes(shellfishes);
+}
 
 setInterval(download,5000);
 
