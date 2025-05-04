@@ -34,8 +34,8 @@ class Shellfish{
         if(this.y < 0) {this.y = 0; this.velocity_y = 0}
         if(this.y > height) {this.y = height; this.velocity_y = 0}
         
-        this.velocity_x += (Math.random()*2-1) * deltatime *0.0001;
-        this.velocity_y += (Math.random()*2-1) * deltatime *0.0001;
+        this.velocity_x += (Math.random()*2-1) * deltatime *0.00005;
+        this.velocity_y += (Math.random()*2-1) * deltatime *0.00005;
         //不更新direction，因为这个要配合css转向，具有last_flag意义的性质
     }
     refreshDisplay(){
