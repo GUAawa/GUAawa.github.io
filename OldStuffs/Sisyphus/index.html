@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="stylesheet.css">
+    <title>西西弗斯Sisyphus</title>
+</head>
+<body>
+    <div style="margin: 3%;"></div>
+    <div><p id="current_height">西西弗斯将巨石推动了 1m 高</p></div>
+    <div><p id="history_height">西西弗斯曾将巨石推动到 1m 高</p></div>
+    <!-- <div style="width: 50%; position: relative; left: 25%;">
+            <img src="images/Sisyphus.jpg" style="width: 30%;"/>
+            <input id="push" type="button" value="推动石头" style="width: 49%;"/>
+    </div> -->
+    <div class="grid-container" style="margin: 5%;">
+            <img src="images/Sisyphus.jpg" style="width: 100%; grid-row: 1/9;"/>
+            <div name="MK0" style="display: flex;">
+                <input class="auto-pusher" id="push" type="button" value="推动石头"/>
+                <p class="pusher-speed" id="push-speed">每次推动将会升高 0.1 m</p>
+                <input class="auto-sander" id="sand" type="button" value="打磨石头"/>
+                <p class="sander-speed" id="sand-speed">每次打磨会让石头快 1.02 倍</p>
+            </div>
+            
+            <div name="MK1" style="display: flex;">
+                <input class="auto-pusher" name="1" type="button" value="招募奴隶"/>
+                <input class="auto-sander" name="1" type="button" value="招募磨工"/>
+            </div>
+    </div>
+</body>
+<script src="script.js"></script>
+</html>
