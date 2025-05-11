@@ -16,7 +16,8 @@ async function handleGet() {
     console.log(content);
 
     DOM_content.value = content;
-    alert("下载成功")
+    // alert("下载成功")
+    setTimeout(()=>alert("下载成功"),1);
 }
 
 //修改 + 新建
@@ -39,7 +40,8 @@ async function handleSubmit() {
     const content = DOM_content.value;
     await TextCC.set(numid, content);
     await TextCC.set(4, JSON.stringify(hub_data));
-    alert("上传成功")
+    // alert("上传成功")
+    setTimeout(()=>alert("上传成功"),1);
 }
 
 async function handleDelete() {
@@ -49,12 +51,14 @@ async function handleDelete() {
     const hub_data = JSON.parse(hub_str);
     console.log(hub_data);
     if (hub_data[title] == undefined) {
-        alert("不存在的瓜记");
+        // alert("不存在的瓜记");
+        setTimeout(()=>alert("不存在的瓜记"),1);
         return;
     }
     const numid = hub_data[title];
     delete hub_data[title];
     await TextCC.set(4, JSON.stringify(hub_data));
-    alert("删除成功")
+    // alert("删除成功")
+    setTimeout(()=>alert("删除成功"),1);
     //文章就不删了，反正找不到了
 }
