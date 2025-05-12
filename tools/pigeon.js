@@ -1,19 +1,10 @@
-// 使用示例
-// 生成密钥对
-// var keys = generateKeys();
-// console.log('私钥:', keys.privateKey);
-// console.log('公钥:', keys.publicKey);
+const GUA_public_key = 
+`-----BEGIN PUBLIC KEY-----
+MFowDQYJKoZIhvcNAQEBBQADSQAwRgI/AJVu1vv8e0I+Na55CuqE+57NmjOwRWAh
+pJxAd4vRGSvZ3yE9fVILdYp8NLyFKEXPgaQx9WCldNN7GXxBgtErAgMBAAE=
+-----END PUBLIC KEY-----
+`
 
-// // 要签名的数据
-// var data = '这是要签名的数据';
-
-// // 签名
-// var signature = signData(data, keys.privateKey);
-// console.log('签名:', signature);
-
-// // 验证
-// var verifyResult = verifyData(data, keys.publicKey, signature);
-// console.log('验证结果:', verifyResult);
 const Pigeon = (() => {
     console.log("正在获取公钥库 (numid=)")
 
@@ -98,13 +89,21 @@ const Pigeon = (() => {
             const obj = JSON.parse(str);
             return new Pigeon(obj.data,obj.signing,obj.public_key);
         }
+        /**
+         * 验证自己是不是GUA的咕咕咕
+         * @returns {number} 0:正常 | -1:非GUA | -2:假签名
+         */
+        isGUA(){
+            if(this.public_key != GUA_public_key){
+                alert("这根本就不是GUA的！")
+                return -1;
+            }
+            if(!this.verify()){
+                alert("这根本就是假咕咕咕！");
+                return -2;
+            }
+            return 0;
+        }
     }
     return Pigeon
 })()
-
-const GUA_public_key = 
-`-----BEGIN PUBLIC KEY-----
-MFowDQYJKoZIhvcNAQEBBQADSQAwRgI/AJVu1vv8e0I+Na55CuqE+57NmjOwRWAh
-pJxAd4vRGSvZ3yE9fVILdYp8NLyFKEXPgaQx9WCldNN7GXxBgtErAgMBAAE=
------END PUBLIC KEY-----
-`
