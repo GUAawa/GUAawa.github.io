@@ -1,9 +1,3 @@
-/*
-改进方案：
-多页
-哈希使用md5,编码为Utf16,节省大小
-*/
-
 const Vault = (() => {
     const storage_numid=5;
     console.log(`Vault 账密系统加载中 storage_numid=${storage_numid}`);
