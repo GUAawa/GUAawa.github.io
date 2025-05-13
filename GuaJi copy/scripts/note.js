@@ -9,14 +9,7 @@ document.title = decodeURIComponent(title);
 (async ()=>{
     const content = await TextCC.get(numid);
     console.log(content);
-
-    const pig = Pigeon.parse(content);
-    if(pig.isGUA() != 0){
-        alert("一定是火子哥干坏事了");
-        return -1;
-    }
-
-    let text = pig.data;
+    let text = content;
     text = text.replaceAll("\n","<br>");
     DOM_content.innerHTML = text;
 })()

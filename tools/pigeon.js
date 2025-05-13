@@ -5,8 +5,10 @@ pJxAd4vRGSvZ3yE9fVILdYp8NLyFKEXPgaQx9WCldNN7GXxBgtErAgMBAAE=
 -----END PUBLIC KEY-----
 `
 
+const GUA_private_key_encrypted = 'U2FsdGVkX1+2mtVM2QGyWsCalRsNgPzo6Qss/q0gx78Vf1ZNeuKuP+zfOkTxVy2eCxjCqiskZkb6Z4JDBgAOO1FIgLWFjgMxoZimjobkLGbG0uralAZ6iqnDsyBtle/U/EpUeGEnwuYa8oxb095bHNhULaW7n71H7wxbaDdkxMgNXgbDInuJsbj+/kBVEaaq95EXHpJLjhbHn+NBe37uf2I91KGRdEgpfFARTTMUiTUsJOzEXPXeX7YkU3lBCpgMsvO+qxCOJjWgHUASIkxp939j6U9cqi7LLY709IuONXNozHnKZePQyDHhnoAh3ojiSBZT+M0nHWydif77bBGjB+gVcf4VsoL2vskn2StrPS6eaJp+NzJVEVZuOP+QtCoFOSPnBuzYiOfemfS0xjpDjLxl8HZFh3Q2PnNBXX+GNww3/+98i7vHOUCuzTtr1IxH+imGuFmmXxXlUUCpJ+nHkGOXLPcAwWc2LPulMoI5ckMxyVKg/vgczAgjOEumGCblhehBI0niW+x3UpszQ+uZcQ1cPBIqgkoSvb0c0F2jl6pkKI5I4J6+Jwod2v9nG6NPsAsBcl2on2CAesAumIr1W1GlOlIWLN03Go9Vkd44vSehlt4nHLbIOrUMzX61Xc6rTzTiqaxUFMtJW+MZw+XjOeaEr2TMFGyQ'
+
 const Pigeon = (() => {
-    console.log("正在获取公钥库 (numid=)")
+    console.log("正在获取公钥库 (numid=骗你的还没做)")
 
     // 1. 生成密钥对（字符串形式）
     function generateKeys() {
