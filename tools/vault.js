@@ -165,12 +165,28 @@ const Vault = (() => {
             return 0;
         }
         async reset(new_usr,new_pwd){
-            //迁出data
+            //迁出data + 判断密码
             const data = await this.get();
-            //删除旧的
-            await Vault.Delete(this.usr,this.pwd);
-            //创建新的
-            const new_vault = await Vault.Create(new_usr,new_pwd);
+            if(data == -2){
+                alert("旧账密错误 ERR: -1")
+                return -1
+            }
+            let new_vault;
+            if(new_usr != this.usr){
+                //创建新的
+                new_vault = await Vault.Create(new_usr,new_pwd);
+                if(new_vault == -2 || new_vault == -1){
+                    alert("新账密创建失败 ERR: -2")
+                    return -2
+                }
+                //删除旧的
+                await Vault.Delete(this.usr,this.pwd);
+            }else{
+                //删除旧的
+                await Vault.Delete(this.usr,this.pwd);
+                //创建新的
+                new_vault = await Vault.Create(new_usr,new_pwd);
+            }
             //更新this
             [this.usr,this.pwd,this.pwd_hash,this.numid] = [new_vault.usr,new_vault.pwd,new_vault.pwd_hash,new_vault.numid];
             //迁入data
