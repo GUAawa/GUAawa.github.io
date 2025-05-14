@@ -106,6 +106,13 @@ const Pigeon = (() => {
             }
             return 0;
         }
+        // //掐头去尾
+        // static shorten_public_key(key){
+        //     return key.slice(28,153)
+        // }
+        // static deshorten_public_key(k){
+        //     return '-----BEGIN PUBLIC KEY-----\r\n' + k + '=\r\n-----END PUBLIC KEY-----\r\n'
+        // }
     }
     return Pigeon
 })()

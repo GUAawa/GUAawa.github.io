@@ -1,17 +1,28 @@
 /*
 改进方案：
 多页
-哈希使用md5,编码为Utf16,节省大小
+*/
+/*
+数据组织方案
+hub : {
+    usr_hash0:numid0,
+    next:最新的没用的numid,
+    deleted:[删除的numid，优先用它们]
+}
+sub : data
 */
 
 const Vault = (() => {
-    const storage_numid=5;
-    console.log(`Vault 账密系统加载中 storage_numid=${storage_numid}`);
+    const numid_hub=5;
+    const numid_max=320; //不含
+    console.log(`Vault 账密系统加载中 numid_hub=${numid_hub}`);
     class Vault {
         constructor(usr,pwd){
-            [this.usr,this.pwd] = [usr,pwd];
-            this.usr_hash = CryptoJS.SHA1(usr).toString();
-            this.pwd_hash = CryptoJS.SHA1(pwd).toString();
+            this.usr=usr;
+            this.pwd=pwd;
+            // this.usr_hash = CryptoJS.MD5(usr).toString(CryptoJS.enc.Utf8); 现在起禁止瞒着我！！！
+            this.pwd_hash = CryptoJS.MD5(pwd).toString();
+            this.numid;
         }
         /**
          * 创建新的账密 (或覆盖)
@@ -22,44 +33,83 @@ const Vault = (() => {
         static async Create(usr,pwd){
             //生成本地vault
             const vault = new Vault(usr,pwd);
-            //增加线上vault
-            const storage_str = await TextCC.get(storage_numid);
-            const storage = JSON.parse(storage_str);
-            console.log(storage);
+            //获取hub
+            const hub_str = await TextCC.get(numid_hub);
+            let hub = JSON.parse(hub_str);
+            console.log(hub);
+            //检查撞名
+            if(usr in hub){
+                alert("用户已存在");
+                return -2;
+            }
+            //开辟sub numid
+            let numid_sub;
+            ///deleted检查
+            if(hub.deleted.length > 0){
+                numid_sub = hub.deleted.shift();
+            }
+            ///next检查
+            else {
+                if(hub.next >= numid_max) {
+                    alert("创建失败，Vault已耗尽");
+                    return -1;
+                }
+                else{
+                    numid_sub = hub.next++;
+                }
+            }
+            vault.numid = numid_sub; //我傻了这俩其实是一个量但现在才想起来
+            //注册用户于hub
+            hub[usr] = numid_sub;
+            console.log(hub);
+            //更新hub
+            await TextCC.set(numid_hub,JSON.stringify(hub));
+            //更新sub
             let data = "verified{}";
             data = GUA_Crypto.encrypt(data,vault.pwd_hash);
-            storage[vault.usr_hash] = data;
-            console.log(storage)
-            await TextCC.set(storage_numid,JSON.stringify(storage));
+            console.log(114514);
+            console.log(data);
+            await TextCC.set(numid_sub,data);
             return vault;
+        }
+        /**
+         * 初次生成时会获取自己的numid
+         * @returns {number} 负数: 错误 | 正数: numid
+         */
+        async get_numid(){
+            const hub_str = await TextCC.get(numid_hub);
+            let hub = JSON.parse(hub_str);
+            console.log(hub);
+            if(!(this.usr in hub)) {
+                alert("未知的用户");
+                return -1;
+            }
+            this.numid = hub[this.usr];
+            return this.numid;
         }
         /**
          * 覆盖账密, 和Create几乎一样，但是data是可变的，且会验证密码 (当然是防止小孩误食而非防熊)
          * @param {Prototype} data 新的数据
          */
         async set(data){
-            //获取storage&验证密码
-            const storage_str = await TextCC.get(storage_numid);
-            const storage = JSON.parse(storage_str);
-            console.log(storage);
-            const data_encrypted = storage[vault.usr_hash];
-            if(data_encrypted == undefined){
-                console.log("错误的用户 ERR=-1");
-                return -1;
-            }
+            //获取numid
+            if(!(this.numid)) await this.get_numid();
+            //获取data_encrypted
+            const data_encrypted = await TextCC.get(this.numid);
+            console.log(data_encrypted);
+            //解密以验证密码
             const data_decrypted = GUA_Crypto.decrypt(data_encrypted,this.pwd_hash)
             if(data_decrypted.slice(0,8) != "verified"){
                 console.log("错误的密码 ERR=-2");
                 return -2;
             }
             //更新data
-            const data_new_decrypted = "verified" + JSON.stringify(data);
-            console.log(data_new_decrypted);
-            const data_new_encrypted = GUA_Crypto.encrypt(data_new_decrypted,this.pwd_hash);
-            storage[this.usr_hash] = data_new_encrypted;
-            console.log(storage);
+            const data_new = "verified" + JSON.stringify(data);
+            console.log(data_new);
+            const data_new_encrypted = GUA_Crypto.encrypt(data_new,this.pwd_hash);
+            console.log(data_new_encrypted);
             //上传
-            await TextCC.set(storage_numid,JSON.stringify(storage));
+            await TextCC.set(this.numid,data_new_encrypted);
             return 0;
         }
         /**
@@ -67,21 +117,18 @@ const Vault = (() => {
          * @returns {Prototype}
          */
         async get(){
-            //获取storage&验证密码
-            const storage_str = await TextCC.get(storage_numid);
-            const storage = JSON.parse(storage_str);
-            console.log(storage);
-            const data_encrypted = storage[vault.usr_hash];
-            if(data_encrypted == undefined){
-                console.log("错误的用户 ERR=-1");
-                return -1;
-            }
+            //获取numid
+            if(!(this.numid)) await this.get_numid();
+            //获取data_encrypted
+            const data_encrypted = await TextCC.get(this.numid);
+            console.log(data_encrypted);
+            //解密以验证密码
             const data_decrypted = GUA_Crypto.decrypt(data_encrypted,this.pwd_hash)
             if(data_decrypted.slice(0,8) != "verified"){
                 console.log("错误的密码 ERR=-2");
                 return -2;
             }
-            //解码解JSON
+            //生成JSON data
             const data_str = data_decrypted.slice(8);
             const data = JSON.parse(data_str);
             console.log(data);
@@ -92,17 +139,42 @@ const Vault = (() => {
          * @param {String} usr 
          * @param {String} pwd 
          */
-        static async Delete(usr,pwd){
-            const vault = new Vault(usr,pwd);
-            //获取storage
-            const storage_str = await TextCC.get(storage_numid);
-            const storage = JSON.parse(storage_str);
-            //删除vault
-            delete storage[vault.usr_hash];
-            console.log(storage);
+        static async Delete(usr,pwd,no_pwd_check = false){
+            let vault = new Vault(usr,pwd);
+            //获取numid
+            await vault.get_numid();
+            //获取data_encrypted
+            const data_encrypted = await TextCC.get(vault.numid);
+            console.log(data_encrypted);
+            //解密以验证密码
+            const data_decrypted = GUA_Crypto.decrypt(data_encrypted,vault.pwd_hash)
+            if(no_pwd_check) console.log("无密码强制删除")
+            if(!no_pwd_check && data_decrypted.slice(0,8) != "verified"){
+                console.log("错误的密码 ERR=-2");
+                return -2;
+            }
+            //更新hub
+            const hub_str = await TextCC.get(numid_hub);
+            let hub = JSON.parse(hub_str);
+            console.log(hub);
+            hub.deleted.push(vault.numid);
+            delete hub[vault.usr];
+            console.log(hub);
             //上传
-            await TextCC.set(storage_numid,JSON.stringify(storage));
+            await TextCC.set(numid_hub,JSON.stringify(hub));
             return 0;
+        }
+        async reset(new_usr,new_pwd){
+            //迁出data
+            const data = await this.get();
+            //删除旧的
+            await Vault.Delete(this.usr,this.pwd);
+            //创建新的
+            const new_vault = await Vault.Create(new_usr,new_pwd);
+            //更新this
+            [this.usr,this.pwd,this.pwd_hash,this.numid] = [new_vault.usr,new_vault.pwd,new_vault.pwd_hash,new_vault.numid];
+            //迁入data
+            await this.set(data);
         }
     }
     return Vault
