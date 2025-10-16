@@ -15,5 +15,33 @@
 <script src="../tools/crypto.js"></script>
 <script src="../modules/forge.min.js"></script>
 <script src="../tools/pigeon.js"></script>
-<script src="./script.js"></script>
+<script>
+    const encrypted_verification = 'U2FsdGVkX196Fw9e2s2OrJcsf0cbU3fcjoTXOTW6Nks='
+    const hash_time = '3806734b256c27e41ec2c6bffa26d9e7' //correct time
+    // const hash_time = '08fe2621d8e716b02ec0da35256a998d' //1016
+    const encrypted_div = 'U2FsdGVkX19UXj7K7WwnTEL8fQBwM4EUGKdo1PCr1vcDj5rroearzhO/+nsDZrIGUVCKbDllv3zBzKXHFCCjVg=='
+    function main(){
+        const key = getQueryVariable("key")
+
+        const verification = GUA_Crypto.decrypt(encrypted_verification,key)
+        if(verification != "verified"){
+            alert("你不该来此: 错误的认证信息")
+            return -1;
+        }
+        const now = new Date();
+        const time = (now.getMonth()+1).toString() + now.getDate().toString()
+        const hash_now = CryptoJS.MD5(time).toString();
+        console.log(time,hash_now)
+        if(hash_now != hash_time){
+            alert("你不该来此: 时候未到")
+            return -2;
+        }
+
+        const key_time = key + time
+        const div = GUA_Crypto.decrypt(encrypted_div,key_time)
+        document.getElementById("content").innerHTML = div; //设置html
+        return 0;
+    }
+    main()
+</script>
 </html>
