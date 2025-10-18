@@ -6,8 +6,7 @@
     <title>被你发现了qwp</title>
 </head>
 <body>
-    <div id="screen" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background-color:black;"></div> 
-    <div id="light" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80vmin;height:80vmin;background:#fff;border-radius:50%"></div>
+    <div id="content"></div>
 </body>
 <script src="../tools/query.js"></script>
 <script src="../tools/base64.js"></script>
@@ -19,8 +18,8 @@
 <script>
     const encrypted_verification = 'U2FsdGVkX196Fw9e2s2OrJcsf0cbU3fcjoTXOTW6Nks='
     const hash_time = '3806734b256c27e41ec2c6bffa26d9e7' //correct time
-    // const hash_time = 'ef50c335cca9f340bde656363ebd02fd' //1018
-    const encrypted_morse = 'U2FsdGVkX18g60EDQyOUOFEGQBrxBldRvqJ27IgaBNRkWhDD2OwsAaui/PBooMWle7+GoCMaWKaBcq7G7o94maiguJxQtxs3Gib9fiU1oD1ZvN7rbrZp2VO8iq1g54louXYrgZcquBdEoa6NDXbYEWkK6M+ANHkWB5Dk6+C+tAakAMvbISR18DKBPm4N4o2UbxAQe4hG6EDFD3hrk2fcyn9yIgkktpAXVINKg3u60WUm4X60o/uZSDuJXqj0ufgrwRH75sYb2FMKCB1TrVsw0e9nQG5Jp3V2mshDS1kmrAeveXjON5Ctew=='
+    // const hash_time = '08fe2621d8e716b02ec0da35256a998d' //1016
+    const encrypted_div = 'U2FsdGVkX19UXj7K7WwnTEL8fQBwM4EUGKdo1PCr1vcDj5rroearzhO/+nsDZrIGUVCKbDllv3zBzKXHFCCjVg=='
     function main(){
         const key = getQueryVariable("key")
 
@@ -37,15 +36,11 @@
             alert("你不该来此: 时候未到")
             return -2;
         }
-        
+
         const key_time = key + time
-        const morse = GUA_Crypto.decrypt(encrypted_morse,key_time)
-        const light = document.getElementById("light")
-        function display(i){
-            light.style.backgroundColor = ((morse[i]=='=')?"white":"black")
-            setTimeout(()=>{display((i+1)%morse.length)},150)
-        }
-        display(0);
+        const div = GUA_Crypto.decrypt(encrypted_div,key_time)
+        document.getElementById("content").innerHTML = div; //设置html
+        return 0;
     }
     main()
 </script>
