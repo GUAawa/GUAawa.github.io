@@ -24,6 +24,11 @@
     function main(){
         const key = getQueryVariable("key")
 
+        if(key == false){
+            alert("你不该来此: 缺失的认证信息")
+            return -3;
+        }
+
         const verification = GUA_Crypto.decrypt(encrypted_verification,key)
         if(verification != "verified"){
             alert("你不该来此: 错误的认证信息")
