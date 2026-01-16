@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>w18v</title>
+</head>
+<style>
+    #body_div {
+        font-size: 100px;
+        background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-align: center;
+        font-weight: bold;
+    }
+</style>
+<body>
+    <!-- 一个彩虹大字，写名字 -->
+    <div id="body_div"></div>
+</body>
+<script>
+    // 这里是w18v的js代码
+    // w18v是随便生成一个名字。首尾为w,v，中间18个字符为随机的 w v ^ *
+    function randomName() {
+        let name = "w";
+        for (let i = 0; i < 18; i++) {
+            name += "wv^*"[Math.floor(Math.random() * 4)];
+        }
+        name += "v";
+        console.log(name);
+
+        document.title = name;
+        document.getElementById("body_div").innerHTML = name;
+    }
+    randomName();
+    //点击字即刻重新随机
+    document.getElementById("body_div").addEventListener("click", randomName);
+</script>
+</html>
