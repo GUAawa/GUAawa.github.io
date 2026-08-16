@@ -28,15 +28,23 @@ var interact_state = {
 
 function handleInput() {
     // move camera with wasd
-    if (KeyboardInput['w']) Render.camera.y -= Config.camera_speed;
-    if (KeyboardInput['s']) Render.camera.y += Config.camera_speed;
-    if (KeyboardInput['a']) Render.camera.x -= Config.camera_speed;
-    if (KeyboardInput['d']) Render.camera.x += Config.camera_speed;
+    if (!KeyboardInput['shift']){
+        if (KeyboardInput['w']) Render.camera.y -= Config.camera_speed;
+        if (KeyboardInput['s']) Render.camera.y += Config.camera_speed;
+        if (KeyboardInput['a']) Render.camera.x -= Config.camera_speed;
+        if (KeyboardInput['d']) Render.camera.x += Config.camera_speed;
+    }
     // mode
     if (KeyboardInput['1']) setInteractStateBuilding("Vortexer");
     if (KeyboardInput['2']) setInteractStateBuilding("Repulser");
     if (KeyboardInput['3']) setInteractStateBuilding("Slide");
-    if (KeyboardInput['c']) {
+    
+    if (KeyboardInput['shift']){
+        if (KeyboardInput['a']) setInteractStateBuilding("Abed");
+        if (KeyboardInput['q']) setInteractStateBuilding("Qbed");
+    }
+
+    if (KeyboardInput['`']) {
         interact_state = {mode:"create_stryng"}
         dashboard.innerHTML = "Create Stryng";
     };

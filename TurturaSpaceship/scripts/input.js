@@ -26,10 +26,10 @@ var MouseInput = {
 var KeyboardInput = {
     init: function() {
         window.addEventListener('keydown', (e) => {
-            KeyboardInput[e.key] = true;
+            KeyboardInput[e.key.toLowerCase()] = true;
         })
         window.addEventListener('keyup', (e) => {
-            KeyboardInput[e.key] = false;
+            KeyboardInput[e.key.toLowerCase()] = false;
         })
     }
 }

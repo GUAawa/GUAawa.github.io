@@ -34,6 +34,31 @@ var ConstructBuilding = {
         game_state.map.buildings[Hex.toString(position)] = building.id;
         return building;
     },
+    Abed: (position) => {
+        const building = {
+            type: "Abed",
+            position,
+            id: game_state.id_controller.building++,
+            class: "Bed"
+        };
+        game_state.buildings[building.id] = building;
+        game_state.map.buildings[Hex.toString(position)] = building.id;
+        // 这个基座以后是要做催化剂控制器的！现在暂时不实现
+        console.log("Abed 实现未完全")
+        return building;
+    },
+    Qbed: (position) => {
+        const building = {
+            type: "Qbed",
+            position,
+            id: game_state.id_controller.building++,
+            class: "Bed"
+        };
+        game_state.buildings[building.id] = building;
+        game_state.map.buildings[Hex.toString(position)] = building.id;
+        // 这个基座不做任何催化剂的控制器
+        return building;
+    },
 }
 
 var Transport = {
@@ -98,7 +123,13 @@ var DrawBuilding = {
     },
     Slide : (building) => {
         Render.drawHexByHex(building.position, "#36f2ff", true, true);
-    }
+    },
+    Abed: (building) => {
+        Render.drawHexByHex(building.position, "#425428", true, true);
+    },
+    Qbed: (building) => {
+        Render.drawHexByHex(building.position, "#542828", true, true);
+    },
 }
 
 function GetBuildingType(position){
