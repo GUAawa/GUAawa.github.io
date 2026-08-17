@@ -43,6 +43,7 @@ var ConstructBuilding = {
         };
         game_state.buildings[building.id] = building;
         game_state.map.buildings[Hex.toString(position)] = building.id;
+        // 这个基座以后是要做催化剂控制器的！现在暂时不实现
         SearchCatalyst(building);
         return building;
     },
@@ -55,7 +56,8 @@ var ConstructBuilding = {
         };
         game_state.buildings[building.id] = building;
         game_state.map.buildings[Hex.toString(position)] = building.id;
-        SearchCatalyst(building);
+        // 这个基座以后是要做催化剂控制器的！现在暂时不实现
+        console.log("Ibed 实现未完全")
         return building;
     },
     Qbed: (position) => {
@@ -67,51 +69,60 @@ var ConstructBuilding = {
         };
         game_state.buildings[building.id] = building;
         game_state.map.buildings[Hex.toString(position)] = building.id;
-        SearchCatalyst(building);
+        // 这个基座不做任何催化剂的控制器
         return building;
     },
 }
 
 function SearchCatalyst(building){
     // 检测有没有符合催化剂的基座阵列，允许旋转
-    const catalyst_patterns = CatalystPatternRelative[building.type];
-    for (const {name,pattern} of catalyst_patterns) {
-        // 检查附近的基座是否满足该图案
-        let success = true;
-        for (const bed of pattern){
-            const position = Hex.add(building.position, bed.position);
-            // 尝试获取该基座
-            const target_id = game_state.map.buildings[Hex.toString(position)];
-            if (target_id === undefined) {
-                success = false;
-                break;
+    const catalyst_patterns = CatalystPatterns[building.type]
+    if(catalyst_patterns === undefined) return;
+    // 遍历每种催化剂
+    for (const catalyst_name in catalyst_patterns){
+        const catalyst_pattern_origin = catalyst_patterns[catalyst_name]; // 正放的催化剂
+        // 旋转催化剂
+        for (let i = 0; i < 6; i++){ // 旋转次数
+            const catalyst_pattern = {};
+            for (const role in catalyst_pattern_origin) {
+                const bed_origin = catalyst_pattern_origin[role];
+                const bed_origin_rel_pos = bed_origin.rel_pos;
+                const bed_rel_pos = Hex.rotate(bed_origin_rel_pos, i);
+                const bed = {
+                    type: bed_origin.type, // 基座类型
+                    rel_pos: bed_rel_pos, // 旋转后的坐标
+                }
+                catalyst_pattern[role] = bed; // 旋转后的催化剂
             }
-            if (game_state.buildings[target_id].type !== bed.type) {
-                success = false;
-                break;
+            // 开始检验临近环境是否符合pattern
+            let matched = true;
+            for (let role in catalyst_pattern){
+                const bed_required = catalyst_pattern[role];
+                const rel_pos = bed_required.rel_pos;
+                const abs_pos = Hex.add(building.position, rel_pos);
+                const bed_id = game_state.map.buildings[Hex.toString(abs_pos)];
+                if (bed_id === undefined) {
+                    matched = false;
+                    break;
+                }
+                const bed = game_state.buildings[bed_id];
+                if (bed.type != bed_required.type) {
+                    matched = false;
+                    console.log(catalyst_pattern, bed, bed_required)
+                    break;
+                }
             }
+            if (!matched) continue;
+            // 催化器匹配！开始编写控制器
+            const catalyst = {
+                type: catalyst_name,
+                position: building.position,
+                rotation: i,
+                id: game_state.id_controller.catalyst++,
+            }
+            game_state.catalysts[catalyst.id] = catalyst;
+            console.log(`找到催化剂 ${catalyst_name}，位置 ${Hex.toString(building.position)}，旋转 ${i}`);
         }
-        if (!success) continue;
-        // 录入催化剂
-        const catalyst_id = game_state.id_controller.catalyst++;
-        const catalyst = {
-            id: catalyst_id, // 催化剂id
-            name: name, // 类型
-            beds: {}
-        } // 催化剂的类型，所选的取向，相对位置
-        for (const bed of pattern){
-            const position = Hex.add(building.position, bed.position);
-            const target_id = game_state.map.buildings[Hex.toString(position)];
-            const target = game_state.buildings[target_id];
-            // 把建筑压入催化剂
-            catalyst.beds[bed.role] = target_id; // 基座的类型，相对位置
-            // 让催化剂的组成部分滴血认主，方便拆除
-            if (!target.catalysts) target.catalysts = [];
-            target.catalysts.push(catalyst_id);
-        }
-        // 总游戏
-        game_state.catalysts[catalyst_id] = catalyst;
-        console.log("找到催化剂", catalyst);
     }
 }
 

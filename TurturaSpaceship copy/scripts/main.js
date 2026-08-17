@@ -19,8 +19,7 @@ var game_state = {
         building: 0, // 建筑物id计数器
         stryng: 0, // 链素id计数器
         catalyst: 0, // 催化剂id计数器
-    },
-    game_phase: "transport"
+    }
 }
 
 var interact_state = {
@@ -73,29 +72,11 @@ function handleInput() {
             const building_id = game_state.map.buildings[Hex.toString(position)];
             if (building_id !== undefined){
                 const building = game_state.buildings[building_id];
-                DeleteBuilding(building); // 删除建筑
+                delete game_state.map.buildings[Hex.toString(building.position)];
+                delete game_state.buildings[building.id];
             }
         }
     }
-}
-
-function DeleteBuilding(building){
-    if (building.catalysts) {
-        // 这个建筑属于某些催化剂，要取消这些催化剂
-        for (const catalyst_id of building.catalysts) {
-            const catalyst = game_state.catalysts[catalyst_id];
-            for (const role in catalyst.beds){
-                const building_id = catalyst.beds[role];
-                const building_deleting = game_state.buildings[building_id];
-                const list = building_deleting.catalysts;
-                list.splice(list.indexOf(building_id), 1); // 删除
-            }
-            delete game_state.catalysts[catalyst_id];
-        }
-    }
-
-    delete game_state.map.buildings[Hex.toString(building.position)];
-    delete game_state.buildings[building.id];
 }
 
 function setInteractStateBuilding(building){
@@ -105,23 +86,10 @@ function setInteractStateBuilding(building){
 
 function tickGame(){
     // Update game state here
-    console.log(`Tick: ${game_state.tick}, Phase: ${game_state.game_phase}`)
+    console.log(`Tick: ${game_state.tick}`);
     game_state.tick++;
-    if(game_state.game_phase === "transport"){
-        moveStryngs();
-        game_state.game_phase = "react"; // 转换为反应阶段
-    }else if (game_state.game_phase === "react"){
-        reactCatalysts();
-        game_state.game_phase = "transport"; // 转换为运输阶段
-    }
-    
-}
-
-function reactCatalysts(){
-    for (const catalyst_id in game_state.catalysts){
-        const catalyst = game_state.catalysts[catalyst_id];
-        Reaction[catalyst.name](catalyst);
-    }
+    // move
+    moveStryngs();
 }
 
 function moveStryngs(){
