@@ -75,6 +75,7 @@ var ConstructBuilding = {
 function SearchCatalyst(building){
     // 检测有没有符合催化剂的基座阵列，允许旋转
     const catalyst_patterns = CatalystPatternRelative[building.type];
+    if (!catalyst_patterns) return;
     for (const {name,pattern} of catalyst_patterns) {
         // 检查附近的基座是否满足该图案
         let success = true;
