@@ -1,5 +1,6 @@
 var ConstructBuilding = {
     Vortexer : (position) => {
+        if (HasStryng(position)) return;
         const building = {
             type: "Vortexer",
             position,
@@ -12,6 +13,7 @@ var ConstructBuilding = {
         return building;
     },
     Repulser : (position) => {
+        if (HasStryng(position)) return;
         const building = {
             type: "Repulser",
             position,
@@ -70,6 +72,12 @@ var ConstructBuilding = {
         SearchCatalyst(building);
         return building;
     },
+}
+
+function HasStryng(position){
+    const stryng_id = game_state.map.stryngs[Hex.toString(position)];
+    if (stryng_id !== undefined) return true;
+    return false;
 }
 
 function SearchCatalyst(building){
