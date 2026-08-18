@@ -86,6 +86,7 @@ function DeleteBuilding(building){
             const catalyst = game_state.catalysts[catalyst_id];
             for (const role in catalyst.beds){
                 const building_id = catalyst.beds[role];
+                if (building_id == building.id) continue; // 不修改自己的列表，因为它正用于for循环
                 const building_deleting = game_state.buildings[building_id];
                 const list = building_deleting.catalysts;
                 list.splice(list.indexOf(building_id), 1); // 删除

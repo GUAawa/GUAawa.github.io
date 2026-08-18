@@ -1,3 +1,31 @@
+var CatalystPattern = {
+    aq: [
+        {type: "Abed", role: "appendix", position: {q:0,r:-1}},
+        {type: "Qbed", role: "reactant", position: {q:-1,r:0}},
+        {type: "Qbed", role: "product", position: {q:1,r:0}},
+    ],
+    qi: [
+        {type: "Abed", role: "appendix", position: {q:-1,r:1}},
+        {type: "Qbed", role: "reactant", position: {q:-1,r:0}},
+        {type: "Qbed", role: "product", position: {q:1,r:0}},
+    ],
+}
+
+function AssignSourcePattern(content){ // 目前只支持单字符
+    CatalystPattern[`src${content}`] = [
+        {type: "Ibed", role:"generator", position: {q:0,r:0}},
+        {type: `${content}bed`, role: "decoration1", position: {q:1,r:0}},
+        {type: `${content}bed`, role: "decoration2", position: {q:0,r:-1}},
+        {type: `${content}bed`, role: "decoration3", position: {q:-1,r:1}},
+    ]
+    Reaction[`src${content}`] = (catalyst) => {
+        const stryng_old = WithdrawStryngByRole(catalyst, "generator", true)
+        if (stryng_old !== null) return false;
+        TransferStryngByRole(catalyst, "generator", content)
+        return true;
+    }
+}
+
 var Reaction = {
     aq: (catalyst) => {
         const reactant = WithdrawStryngByRole(catalyst, "reactant", true)
@@ -48,6 +76,11 @@ var Reaction = {
         return true;
     },
 }
+
+AssignSourcePattern("A");
+AssignSourcePattern("Q");
+AssignSourcePattern("I");
+
 function WithdrawStryngByRole(catalyst, role, isFake = false){
     const bed_id = catalyst.beds[role]
     const bed = game_state.buildings[bed_id]
@@ -67,19 +100,6 @@ function TransferStryngByRole(catalyst, role, content){
     const bed = game_state.buildings[bed_id]
     const position = bed.position
     SummonStryng(content, position)
-}
-
-const CatalystPattern = {
-    aq: [
-        {type: "Abed", role: "appendix", position: {q:0,r:-1}},
-        {type: "Qbed", role: "reactant", position: {q:-1,r:0}},
-        {type: "Qbed", role: "product", position: {q:1,r:0}},
-    ],
-    qi: [
-        {type: "Abed", role: "appendix", position: {q:-1,r:1}},
-        {type: "Qbed", role: "reactant", position: {q:-1,r:0}},
-        {type: "Qbed", role: "product", position: {q:1,r:0}},
-    ],
 }
 
 // 预烘焙
