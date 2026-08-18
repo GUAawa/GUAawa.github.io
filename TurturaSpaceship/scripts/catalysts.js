@@ -137,4 +137,3 @@ for (const catalyst_name in CatalystPattern){
         }
     }
 }
-console.log(CatalystPatternRelative)
