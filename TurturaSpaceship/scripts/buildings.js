@@ -210,3 +210,9 @@ function GetBuildingType(position){
     if(building_id === undefined) return null;
     return game_state.buildings[building_id].type;
 }
+
+function setInteractStateBuilding(building){
+    interact_state = {mode: "build", building}
+    const dashboard = document.getElementById("gameDashboard");
+    dashboard.innerHTML = `Building: ${building}`;
+}

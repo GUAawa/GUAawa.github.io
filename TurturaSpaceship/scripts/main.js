@@ -98,11 +98,6 @@ function DeleteBuilding(building){
     delete game_state.buildings[building.id];
 }
 
-function setInteractStateBuilding(building){
-    interact_state = {mode: "build", building}
-    dashboard.innerHTML = `Building: ${building}`;
-}
-
 function tickGame(){
     // Update game state here
     console.log(`Tick: ${game_state.tick}, Phase: ${game_state.game_phase}`)
