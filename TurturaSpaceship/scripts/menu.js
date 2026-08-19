@@ -1,15 +1,25 @@
-var MainMenu = {name: "MainMenu", children: [
-    {name: "Transporters", children: [
-        {name: "Vortexer", function: () => setInteractStateBuilding("Vortexer")},
-        {name: "Repulser", function: () => setInteractStateBuilding("Repulser")},
-        {name: "Slide", function: () => setInteractStateBuilding("Slide")},
+var MainMenu = {name: "MainMenu" , children: [
+    {name: "Buildings", children: [
+        {name: "Transporters", children: [
+            {name: "Vortexer", function: () => setInteractStateBuilding("Vortexer")},
+            {name: "Repulser", function: () => setInteractStateBuilding("Repulser")},
+            {name: "Slide", function: () => setInteractStateBuilding("Slide")},
+        ]},
+        {name: "Beds", children: [
+            {name: "Abed", function: () => setInteractStateBuilding("Abed")},
+            {name: "Ibed", function: () => setInteractStateBuilding("Ibed")},
+            {name: "Qbed", function: () => setInteractStateBuilding("Qbed")},
+        ]}
     ]},
-    {name: "Beds", children: [
-        {name: "Abed", function: () => setInteractStateBuilding("Abed")},
-        {name: "Ibed", function: () => setInteractStateBuilding("Ibed")},
-        {name: "Qbed", function: () => setInteractStateBuilding("Qbed")},
+    {name: "Documentation", children: [
+        {name: "stryng", function: () => OpenPage("documentation/stryng")},
+        {name: "!!!Do not touch!!!", function: () => window.open("https://www.bilibili.com/video/BV1GJ411x7h7/?spm_id_from=333.337.search-card.all.click&vd_source=d58769cd17feec8c54efcb9233da31cd", "_blank")}
     ]}
 ]}
+
+function OpenPage(page){
+    window.open(`texts/${page}.html`, "_blank");
+}
 
 let menu_stack = [];
 function DisplayMenu(submenu){
