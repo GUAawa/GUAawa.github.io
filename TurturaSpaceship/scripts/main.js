@@ -175,9 +175,11 @@ function moveStryngsByVelocity(){
             let local_stryng = null; // 可能有一个链素本就在这
             for (const id of planning_ids) {
                 const stryng = game_state.stryngs[id];
+                /* 设定更动，现在不取消速度
                 // 移动被取消，所以失去速度
                 stryng.velocity.q = 0;
                 stryng.velocity.r = 0;
+                */
                 // 改为申请原位
                 const position_old = stryng.position
                 if (Hex.ifEqual(position_new, position_old)) {

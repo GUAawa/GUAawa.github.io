@@ -139,6 +139,9 @@ var Transport = {
             const target_pos = Hex.add(building.position, entry.rel_pos);
             const target_id = game_state.map.stryngs[Hex.toString(target_pos)];
             if (target_id === undefined) continue;
+            const building_that_id = game_state.map.buildings[Hex.toString(target_pos)];
+            const building_that = game_state.buildings[building_that_id];
+            if (building_that && building_that.type === "Slide") continue; //滑道豁免
             game_state.stryngs[target_id].velocity.q += entry.force.q;
             game_state.stryngs[target_id].velocity.r += entry.force.r;
         }
@@ -157,6 +160,9 @@ var Transport = {
             const target_pos = Hex.add(building.position, entry.rel_pos);
             const target_id = game_state.map.stryngs[Hex.toString(target_pos)];
             if (target_id === undefined) continue;
+            const building_that_id = game_state.map.buildings[Hex.toString(target_pos)];
+            const building_that = game_state.buildings[building_that_id];
+            if (building_that && building_that.type === "Slide") continue; //滑道豁免
             game_state.stryngs[target_id].velocity.q += entry.force.q;
             game_state.stryngs[target_id].velocity.r += entry.force.r;
         }
