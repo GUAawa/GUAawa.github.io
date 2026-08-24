@@ -14,8 +14,10 @@ var MainMenu = {name: "MainMenu" , children: [
     {name: "Documentation", children: [
         {name: "stryng", function: () => OpenPage("documentation/stryng")},
         {name: "transportation", function: () => OpenPage("documentation/transportation")},
-        {name: "catalysts", function: () => OpenPage("documentation/catalysts")},
-
+        {name: "catalyst", function: () => OpenPage("documentation/catalyst")},
+        {name: "catalysts", children: [
+            {name: "aq", function: () => OpenPage("documentation/catalysts/aq")},
+        ]},
         {name: "!!!Do not touch!!!", function: () => window.open("https://www.bilibili.com/video/BV1GJ411x7h7/?spm_id_from=333.337.search-card.all.click&vd_source=d58769cd17feec8c54efcb9233da31cd", "_blank")}
     ]}
 ]}

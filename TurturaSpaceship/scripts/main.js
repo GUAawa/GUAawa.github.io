@@ -20,7 +20,6 @@ var game_state = {
         stryng: 0, // 链素id计数器
         catalyst: 0, // 催化剂id计数器
     },
-    game_phase: "transport"
 }
 
 var interact_state = {
@@ -103,10 +102,10 @@ function tickGame(){
     // Update game state here
     console.log(`Tick: ${game_state.tick}, Phase: ${game_state.game_phase}`)
     game_state.tick++;
-    if(game_state.game_phase === "transport"){
+    if(game_state.tick %2 == 0){
         moveStryngs();
         game_state.game_phase = "react"; // 转换为反应阶段
-    }else if (game_state.game_phase === "react"){
+    }else if (game_state.tick %2 == 1){
         reactCatalysts();
         game_state.game_phase = "transport"; // 转换为运输阶段
     }
