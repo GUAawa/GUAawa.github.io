@@ -97,18 +97,20 @@ var advancements = {
     },
 }
 
-var advancement_state = {} // 成就是否被完成
-for(let advancement in advancements){
-    advancement_state[advancement] = {
-        description: advancements[advancement].description,
-        is_completed: false, // 默认未完成
-        is_activated: false, // 默认未激活
-    };
+function InitAdvancementState(){
+    // 初始化所有成就
+    for(let advancement in advancements){
+        game_state.advancement_state[advancement] = {
+            description: advancements[advancement].description,
+            is_completed: false, // 默认未完成
+            is_activated: false, // 默认未激活
+        };
+    }
 }
 
 function activateAdvancement(advancement_name) {
-    if (advancement_state[advancement_name].is_activated) return;
-    advancement_state[advancement_name].is_activated = true;
+    if (game_state.advancement_state[advancement_name].is_activated) return;
+    game_state.advancement_state[advancement_name].is_activated = true;
     console.log(`成就 ${advancement_name} 已激活`);
     let advancement_menu = globalThis.MainMenu.children.find(child => child.name === "Advancements");
     if (advancement_menu.children.some(child => child.name === advancement_name)) return;
@@ -117,4 +119,19 @@ function activateAdvancement(advancement_name) {
         content: advancements[advancement_name].description, 
         color: "grey", 
     });
+}
+
+function completeAdvancement(advancement_name) {
+    // 预防性激活
+    activateAdvancement(advancement_name);
+    // 完成
+    if (game_state.advancement_state[advancement_name].is_completed) return;
+    game_state.advancement_state[advancement_name].is_completed = true;
+    game_state.advancement_state[advancement_name].completed_time = Date.now(); // 成就图标变绿
+    game_state.advancement_state[advancement_name].completed_tick = game_state.tick; // 成就图标变绿
+    console.log(`成就 ${advancement_name} 已完成`);
+    let advancement_menu = globalThis.MainMenu.children.find(child => child.name === "Advancements");
+    let child = advancement_menu.children.find(child => child.name === advancement_name);
+    child.color = "green"; // 成就图标变绿
+    child.content = advancements[advancement_name].description + `<br>完成刻: ${game_state.advancement_state[advancement_name].completed_tick}<br>完成时间: ${new Date(game_state.advancement_state[advancement_name].completed_time).toLocaleString()}`;
 }

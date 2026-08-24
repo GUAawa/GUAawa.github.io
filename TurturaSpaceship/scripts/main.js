@@ -20,6 +20,7 @@ var game_state = {
         stryng: 0, // 链素id计数器
         catalyst: 0, // 催化剂id计数器
     },
+    advancement_state: {},
 }
 
 var interact_state = {
@@ -248,6 +249,8 @@ function loop(){
     
     requestAnimationFrame(loop);
 }
+
+InitAdvancementState();
 
 MouseInput.init();
 KeyboardInput.init();
