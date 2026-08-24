@@ -9,6 +9,12 @@ var CatalystPattern = {
         {type: "Qbed", role: "reactant", position: {q:-1,r:0}},
         {type: "Qbed", role: "product", position: {q:1,r:0}},
     ],
+    srcQ: [
+        {type: "Ibed", role:"generator", position: {q:0,r:0}},
+        {type: `Qbed`, role: "decoration1", position: {q:1,r:0}},
+        {type: `Qbed`, role: "decoration2", position: {q:0,r:-1}},
+        {type: `Qbed`, role: "decoration3", position: {q:-1,r:1}},
+    ]
 }
 
 function AssignSourcePattern(content){ // 目前只支持单字符
@@ -75,10 +81,17 @@ var Reaction = {
         WithdrawStryngByRole(catalyst, "appendix")
         return true;
     },
+    srcQ: (catalyst) => {
+        const stryng_old = WithdrawStryngByRole(catalyst, "generator", true)
+        if (stryng_old !== null) return false;
+        TransferStryngByRole(catalyst, "generator", "Q")
+        if (!IsAdvancementCompleted("有Q人")) CompleteAdvancement("有Q人");
+        return true;
+    }
 }
 
+// AssignSourcePattern("Q");
 AssignSourcePattern("A");
-AssignSourcePattern("Q");
 AssignSourcePattern("I");
 
 function WithdrawStryngByRole(catalyst, role, isFake = false){

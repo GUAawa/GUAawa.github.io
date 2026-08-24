@@ -1,4 +1,8 @@
 var advancements = {
+    "坠落": {
+        description: "打开游戏，你就坠落在这颗星球了。",
+        on_complete: () => {globalThis.ActivateAdvancement("有Q人");}
+    },
     "有Q人": {
         description: "使用 srcQ 得到你的第一个链素。",
     },
@@ -108,7 +112,7 @@ function InitAdvancementState(){
     }
 }
 
-function activateAdvancement(advancement_name) {
+function ActivateAdvancement(advancement_name) {
     if (game_state.advancement_state[advancement_name].is_activated) return;
     game_state.advancement_state[advancement_name].is_activated = true;
     console.log(`成就 ${advancement_name} 已激活`);
@@ -121,17 +125,25 @@ function activateAdvancement(advancement_name) {
     });
 }
 
-function completeAdvancement(advancement_name) {
+function CompleteAdvancement(advancement_name) {
     // 预防性激活
-    activateAdvancement(advancement_name);
+    ActivateAdvancement(advancement_name);
     // 完成
     if (game_state.advancement_state[advancement_name].is_completed) return;
     game_state.advancement_state[advancement_name].is_completed = true;
-    game_state.advancement_state[advancement_name].completed_time = Date.now(); // 成就图标变绿
-    game_state.advancement_state[advancement_name].completed_tick = game_state.tick; // 成就图标变绿
+    game_state.advancement_state[advancement_name].completed_time = Date.now();
+    game_state.advancement_state[advancement_name].completed_tick = game_state.tick;
     console.log(`成就 ${advancement_name} 已完成`);
     let advancement_menu = globalThis.MainMenu.children.find(child => child.name === "Advancements");
     let child = advancement_menu.children.find(child => child.name === advancement_name);
     child.color = "green"; // 成就图标变绿
     child.content = advancements[advancement_name].description + `<br>完成刻: ${game_state.advancement_state[advancement_name].completed_tick}<br>完成时间: ${new Date(game_state.advancement_state[advancement_name].completed_time).toLocaleString()}`;
+
+    if(advancements[advancement_name].on_complete){
+        advancements[advancement_name].on_complete();
+    }
+}
+
+function IsAdvancementCompleted(advancement_name) {
+    return Boolean(game_state.advancement_state[advancement_name].is_completed);
 }
