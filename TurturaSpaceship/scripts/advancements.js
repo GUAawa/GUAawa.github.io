@@ -1,16 +1,19 @@
 var advancements = {
     "坠落": {
         description: "打开游戏，你就坠落在这颗星球了。",
-        on_complete: () => {globalThis.ActivateAdvancement("有Q人");}
+        on_complete: () => {globalThis.ActivateAdvancement("有Q人");},
+        completing_guard: () => {return !IsAdvancementCompleted("有Q人");}
     },
     "有Q人": {
         description: "使用 srcQ 得到你的第一个链素。",
+        on_complete: () => {globalThis.ActivateAdvancement("自产自销");}
     },
     "自产自销": {
-        description: "将 Q 链素运至 input 催化剂来提交它。",
-    },
-    "无穷尽也": {
-        description: "提交 100 个 Q 。",
+        description: "将 10 个 Q 链素运至 input 催化剂提交。",
+        stryng_requirement: {
+            stryng: "Q",
+            amount: 10,
+        },
     },
     "苹果": {
         description: "使用 srcA 得到 A 链素。",
@@ -102,7 +105,17 @@ var advancements = {
 }
 
 function InitAdvancementState(){
-    // 初始化所有成就
+    // 精加工成就配置
+    for(let advancement in advancements){
+        if (advancements[advancement].stryng_requirement){
+            advancements[advancement].completing_guard = () => {
+                let stryng = advancements[advancement].stryng_requirement.stryng;
+                let amount = advancements[advancement].stryng_requirement.amount;
+                return game_state.storage[stryng] >= amount; // 检查是否满足要求 // undef一定返回false
+            }
+        }
+    }
+    // 初始化游戏数据
     for(let advancement in advancements){
         game_state.advancement_state[advancement] = {
             description: advancements[advancement].description,
@@ -115,6 +128,11 @@ function InitAdvancementState(){
 function ActivateAdvancement(advancement_name) {
     if (game_state.advancement_state[advancement_name].is_activated) return;
     game_state.advancement_state[advancement_name].is_activated = true;
+
+    if (advancements[advancement_name].completing_guard) {
+        game_state.completing_guards[advancement_name] = true;
+    }
+    
     console.log(`成就 ${advancement_name} 已激活`);
     let advancement_menu = globalThis.MainMenu.children.find(child => child.name === "Advancements");
     if (advancement_menu.children.some(child => child.name === advancement_name)) return;

@@ -21,6 +21,8 @@ var game_state = {
         catalyst: 0, // 催化剂id计数器
     },
     advancement_state: {},
+    storage: {},
+    completing_guards: {},
 }
 
 var interact_state = {
@@ -101,16 +103,14 @@ function DeleteBuilding(building){
 
 function tickGame(){
     // Update game state here
-    console.log(`Tick: ${game_state.tick}, Phase: ${game_state.game_phase}`)
+    console.log(`Tick: ${game_state.tick}`)
     game_state.tick++;
     if(game_state.tick %2 == 0){
         moveStryngs();
-        game_state.game_phase = "react"; // 转换为反应阶段
     }else if (game_state.tick %2 == 1){
         reactCatalysts();
-        game_state.game_phase = "transport"; // 转换为运输阶段
     }
-    
+    CheckCompletementGuard();
 }
 
 function reactCatalysts(){
@@ -212,6 +212,21 @@ function moveStryngsByVelocity(){
     }
 }
 
+function CheckCompletementGuard(){
+    let completeds = [];
+    for (const advancement_name in game_state.completing_guards){
+        const guard = advancements[advancement_name].completing_guard;
+        const result = guard();
+        if (result) {
+            completeds.push(advancement_name); // 字典遍历中，不可删除
+            CompleteAdvancement(advancement_name);
+        }
+    }
+    for (const advancement_name of completeds){
+        delete game_state.completing_guards[advancement_name];
+    }
+}
+
 function render(){
     // Clear the canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -260,4 +275,6 @@ SummonStryng("AQ", {q:1,r:1}); // debug
 
 requestAnimationFrame(loop);
 
-CompleteAdvancement("坠落");
+ActivateAdvancement("坠落");
+
+UpdateStorageContent();

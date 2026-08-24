@@ -21,12 +21,12 @@ var MainMenu = {name: "MainMenu" , children: [
             {name: "srcQ", function: () => OpenPage("documentation/catalysts/srcQ")},
             {name: "srcA", function: () => OpenPage("documentation/catalysts/srcA")},
             {name: "srcI", function: () => OpenPage("documentation/catalysts/srcI")},
+            {name: "input", function: () => OpenPage("documentation/catalysts/input")},
         ]},
         {name: "!!!Do not touch!!!", function: () => window.open("https://www.bilibili.com/video/BV1GJ411x7h7/?spm_id_from=333.337.search-card.all.click&vd_source=d58769cd17feec8c54efcb9233da31cd", "_blank")}
     ]},
-    {
-        name: "Advancements", children: []
-    }
+    {name: "Advancements", children: []},
+    {name: "Storage", content: "Storage not initialized."}
 ]}
 
 function OpenPage(page){
@@ -51,7 +51,7 @@ function DisplayMenu(submenu){
     }
     // 3.展示当前目录 或 文本
     const content = submenu.content;
-    if (content){
+    if (content !== undefined){
         const div = document.createElement("div");
         div.innerHTML = content;
         gameMenu.appendChild(div); // 文本内容
@@ -67,7 +67,7 @@ function DisplayMenu(submenu){
             if (child.color) {
                 a.style.color = child.color;
             }
-            if (child.children || child.content){
+            if (child.children || child.content !== undefined){
                 a.onclick = () => GotoMenu(child);
             }
             if (child.function){
@@ -86,6 +86,15 @@ function GotoMenu(menu){
 function GoBackMenu(){
     menu_stack.pop();
     DisplayMenu(menu_stack[menu_stack.length - 1]); // 返回上一级菜单
+}
+
+function UpdateStorageContent(){
+    let content = "";
+    for (const stryng in game_state.storage){
+        content += `${stryng}: ${game_state.storage[stryng]}\n`;
+    }
+    const storage_menu = MainMenu.children.find(child => child.name === "Storage")
+    storage_menu.content = content; // 更新存储内容
 }
 
 GotoMenu(MainMenu); // 显示主菜单

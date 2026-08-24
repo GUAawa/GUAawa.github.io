@@ -10,10 +10,16 @@ var CatalystPattern = {
         {type: "Qbed", role: "product", position: {q:1,r:0}},
     ],
     srcQ: [
-        {type: "Ibed", role:"generator", position: {q:0,r:0}},
+        {type: "Ibed", role: "generator", position: {q:0,r:0}},
         {type: `Qbed`, role: "decoration1", position: {q:1,r:0}},
         {type: `Qbed`, role: "decoration2", position: {q:0,r:-1}},
         {type: `Qbed`, role: "decoration3", position: {q:-1,r:1}},
+    ],
+    input: [
+        {type: "Ibed", role: "input", position: {q:0,r:-1}},
+        {type: "Abed", role: "decoration1", position: {q:0,r:1}},
+        {type: "Qbed", role: "decoration2", position: {q:1,r:0}},
+        {type: "Qbed", role: "decoration3", position: {q:-1,r:1}},
     ]
 }
 
@@ -82,10 +88,27 @@ var Reaction = {
         return true;
     },
     srcQ: (catalyst) => {
+        if (!IsAdvancementCompleted("有Q人")) CompleteAdvancement("有Q人"); //成就
+
         const stryng_old = WithdrawStryngByRole(catalyst, "generator", true)
         if (stryng_old !== null) return false;
         TransferStryngByRole(catalyst, "generator", "Q")
-        if (!IsAdvancementCompleted("有Q人")) CompleteAdvancement("有Q人");
+        return true;
+    },
+    input: (catalyst) => {
+        // 输入逻辑
+        const stryng_old = WithdrawStryngByRole(catalyst, "input", isFake=true)
+        if (stryng_old === null) return false;
+        if (!Config.storage_stryng_amount_max[stryng_old]) return false;
+        if (!game_state.storage[stryng_old]) game_state.storage[stryng_old] = 0;
+        if (game_state.storage[stryng_old] >= Config.storage_stryng_amount_max[stryng_old]) return false;
+        
+        WithdrawStryngByRole(catalyst, "input");
+        game_state.storage[stryng_old]++;
+        UpdateStorageContent();
+
+        // 成就检测
+        /*成就检测不在这里做了，用成就系统里的completement_guard实现 */
         return true;
     }
 }
