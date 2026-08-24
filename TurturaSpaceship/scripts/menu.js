@@ -17,9 +17,16 @@ var MainMenu = {name: "MainMenu" , children: [
         {name: "catalyst", function: () => OpenPage("documentation/catalyst")},
         {name: "catalysts", children: [
             {name: "aq", function: () => OpenPage("documentation/catalysts/aq")},
+            {name: "qi", function: () => OpenPage("documentation/catalysts/qi")},
+            {name: "srcQ", function: () => OpenPage("documentation/catalysts/srcQ")},
+            {name: "srcA", function: () => OpenPage("documentation/catalysts/srcA")},
+            {name: "srcI", function: () => OpenPage("documentation/catalysts/srcI")},
         ]},
         {name: "!!!Do not touch!!!", function: () => window.open("https://www.bilibili.com/video/BV1GJ411x7h7/?spm_id_from=333.337.search-card.all.click&vd_source=d58769cd17feec8c54efcb9233da31cd", "_blank")}
-    ]}
+    ]},
+    {
+        name: "Advancements", children: []
+    }
 ]}
 
 function OpenPage(page){
@@ -42,21 +49,32 @@ function DisplayMenu(submenu){
         div.appendChild(a);
         gameMenu.appendChild(div); // 返回按钮
     }
-    // 3.展示当前目录
-    const children = submenu.children;
-    for(const child of children){
+    // 3.展示当前目录 或 文本
+    const content = submenu.content;
+    if (content){
         const div = document.createElement("div");
-        const a = document.createElement("a");
-        div.appendChild(a);
-        a.innerHTML = child.name;
-        a.href = "javascript:void(0)"
-        if (child.children){
-            a.onclick = () => GotoMenu(child);
+        div.innerHTML = content;
+        gameMenu.appendChild(div); // 文本内容
+    }
+    const children = submenu.children;
+    if (children) {
+        for(const child of children){
+            const div = document.createElement("div");
+            const a = document.createElement("a");
+            div.appendChild(a);
+            a.innerHTML = child.name;
+            a.href = "javascript:void(0)"
+            if (child.color) {
+                a.style.color = child.color;
+            }
+            if (child.children || child.content){
+                a.onclick = () => GotoMenu(child);
+            }
+            if (child.function){
+                a.onclick = child.function;
+            }
+            gameMenu.appendChild(div);
         }
-        if (child.function){
-            a.onclick = child.function;
-        }
-        gameMenu.appendChild(div);
     }
 }
 

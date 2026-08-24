@@ -105,3 +105,16 @@ for(let advancement in advancements){
         is_activated: false, // 默认未激活
     };
 }
+
+function activateAdvancement(advancement_name) {
+    if (advancement_state[advancement_name].is_activated) return;
+    advancement_state[advancement_name].is_activated = true;
+    console.log(`成就 ${advancement_name} 已激活`);
+    let advancement_menu = globalThis.MainMenu.children.find(child => child.name === "Advancements");
+    if (advancement_menu.children.some(child => child.name === advancement_name)) return;
+    advancement_menu.children.push({
+        name: advancement_name, 
+        content: advancements[advancement_name].description, 
+        color: "grey", 
+    });
+}

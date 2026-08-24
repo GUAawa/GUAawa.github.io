@@ -256,3 +256,5 @@ ConstructBuilding.Vortexer({q:1,r:0});// debug
 SummonStryng("AQ", {q:1,r:1}); // debug
 
 requestAnimationFrame(loop);
+
+activateAdvancement("有Q人"); // 激活成就 "有Q人"
