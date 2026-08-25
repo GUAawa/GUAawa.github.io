@@ -122,7 +122,7 @@ var advancements = {
     },
 }
 
-function InitAdvancementState(){
+function BakeAdvancements(){
     // 精加工成就配置
     for(let advancement in advancements){
         if (advancements[advancement].stryng_requirement){
@@ -133,17 +133,20 @@ function InitAdvancementState(){
             }
         }
     }
-    // 初始化游戏数据
-    for(let advancement in advancements){
-        game_state.advancement_state[advancement] = {
-            description: advancements[advancement].description,
-            is_completed: false, // 默认未完成
-            is_activated: false, // 默认未激活
-        };
-    }
+}
+
+function InitializeAdvancement(advancement_name) {
+    if (game_state.advancement_state[advancement_name]) return;
+    game_state.advancement_state[advancement_name] = {
+        is_activated: false, 
+        is_completed: false, 
+        completed_time: null, 
+        completed_tick: null, 
+    }; // 初始化成就状态
 }
 
 function ActivateAdvancement(advancement_name) {
+    if (!game_state.advancement_state[advancement_name]) InitializeAdvancement(advancement_name);
     if (game_state.advancement_state[advancement_name].is_activated) return;
     game_state.advancement_state[advancement_name].is_activated = true;
 
@@ -182,5 +185,6 @@ function CompleteAdvancement(advancement_name) {
 }
 
 function IsAdvancementCompleted(advancement_name) {
+    if (!game_state.advancement_state[advancement_name]) return false;
     return Boolean(game_state.advancement_state[advancement_name].is_completed);
 }

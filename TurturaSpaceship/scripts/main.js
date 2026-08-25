@@ -2,28 +2,8 @@ const canvas = document.getElementById('gameCanvas');
 const dashboard = document.getElementById('gameDashboard');
 const input_stryng = document.getElementById('gameInputStryng');
 
-var game_state = {
-    time: {
-        accumulated: 0.0, //累积的未处理时间
-        last: performance.now(), //上次结算时间
-    },
-    tick: 0, // 游戏逻辑刻
-    map: {
-        buildings: {}, // 建筑物，"q,r" -> id
-        stryngs: {}, //链素，"q,r" -> id
-    },
-    buildings: {}, // 建筑物，id -> {id, type, position: {q, r}, ...(extra)}
-    stryngs: {}, // 链素，id -> {id, content, position: {q, r}}
-    catalysts: {}, // 催化剂，id -> {id, type, beds:{role, position: {q, r}}, ...(extra)}
-    id_controller: {
-        building: 0, // 建筑物id计数器
-        stryng: 0, // 链素id计数器
-        catalyst: 0, // 催化剂id计数器
-    },
-    advancement_state: {},
-    storage: {},
-    completing_guards: {},
-}
+var game_state;
+NewGame();
 
 var interact_state = {
     mode: "disabled",
@@ -265,15 +245,16 @@ function loop(){
     requestAnimationFrame(loop);
 }
 
-InitAdvancementState();
+BakeAdvancements();
 
 MouseInput.init();
 KeyboardInput.init();
 
-ConstructBuilding.Vortexer({q:0,r:0});// debug
-SummonStryng("QQ", {q:1,r:0}); // debug
-SummonStryng("(AA)", {q:0,r:1}); // debug
-SummonStryng("RKH(", {q:-1,r:0}); // debug
+// 设定上这个是飞船遗骸
+ConstructBuilding.Vortexer({q:0,r:0});
+SummonStryng("QQ", {q:1,r:0});
+SummonStryng("(AA)", {q:0,r:1});
+SummonStryng("RKH(", {q:-1,r:0});
 
 requestAnimationFrame(loop);
 
