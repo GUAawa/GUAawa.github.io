@@ -26,7 +26,13 @@ var MainMenu = {name: "MainMenu" , children: [
         {name: "!!!Do not touch!!!", function: () => window.open("https://www.bilibili.com/video/BV1GJ411x7h7/?spm_id_from=333.337.search-card.all.click&vd_source=d58769cd17feec8c54efcb9233da31cd", "_blank")}
     ]},
     {name: "Advancements", children: []},
-    {name: "Storage", content: "Storage not initialized."}
+    {name: "Storage", content: "Storage not initialized."},
+    {name: "Stories", children: [
+        {name: "Prologue", children: [
+            {name: "迫降", function: () => OpenPage("stories/prologue/迫降")},
+            {name: "检查", function: () => OpenPage("stories/prologue/检查")},
+        ]}
+    ]}
 ]}
 
 function OpenPage(page){
