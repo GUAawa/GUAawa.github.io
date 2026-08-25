@@ -270,8 +270,10 @@ InitAdvancementState();
 MouseInput.init();
 KeyboardInput.init();
 
-ConstructBuilding.Vortexer({q:1,r:0});// debug
-SummonStryng("AQ", {q:1,r:1}); // debug
+ConstructBuilding.Vortexer({q:0,r:0});// debug
+SummonStryng("QQ", {q:1,r:0}); // debug
+SummonStryng("(AA)", {q:0,r:1}); // debug
+SummonStryng("RKH(", {q:-1,r:0}); // debug
 
 requestAnimationFrame(loop);
 

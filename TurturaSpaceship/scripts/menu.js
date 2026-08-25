@@ -32,7 +32,11 @@ var MainMenu = {name: "MainMenu" , children: [
             {name: "迫降", function: () => OpenPage("stories/prologue/迫降")},
             {name: "检查", function: () => OpenPage("stories/prologue/检查")},
         ]}
-    ]}
+    ]},
+    {name: "Tutorial", children: [
+        {name: "操作", function: () => OpenPage("tutorial/操作")},
+        {name: "自产自销", function: () => OpenPage("tutorial/自产自销")}
+    ]},
 ]}
 
 function OpenPage(page){
