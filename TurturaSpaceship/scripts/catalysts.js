@@ -15,6 +15,12 @@ var CatalystPattern = {
         {type: `Qbed`, role: "decoration2", position: {q:0,r:-1}},
         {type: `Qbed`, role: "decoration3", position: {q:-1,r:1}},
     ],
+    srcA: [
+        {type: "Ibed", role: "generator", position: {q:0,r:0}},
+        {type: `Abed`, role: "decoration1", position: {q:1,r:0}},
+        {type: `Abed`, role: "decoration2", position: {q:0,r:-1}},
+        {type: `Abed`, role: "decoration3", position: {q:-1,r:1}},
+    ],
     input: [
         {type: "Ibed", role: "input", position: {q:0,r:-1}},
         {type: "Abed", role: "decoration1", position: {q:0,r:1}},
@@ -61,6 +67,7 @@ var Reaction = {
         TransferStryngByRole(catalyst, "product", product)
         WithdrawStryngByRole(catalyst, "reactant")
         WithdrawStryngByRole(catalyst, "appendix")
+        if (!IsAdvancementCompleted("它变长了")) CompleteAdvancement("它变长了"); //成就
         return true;
     },
     qi: (catalyst) => {
@@ -95,6 +102,14 @@ var Reaction = {
         TransferStryngByRole(catalyst, "generator", "Q")
         return true;
     },
+    srcA: (catalyst) => {
+        if (!IsAdvancementCompleted("苹果")) CompleteAdvancement("苹果"); //成就
+
+        const stryng_old = WithdrawStryngByRole(catalyst, "generator", true)
+        if (stryng_old !== null) return false;
+        TransferStryngByRole(catalyst, "generator", "A")
+        return true;
+    },
     input: (catalyst) => {
         // 输入逻辑
         const stryng_old = WithdrawStryngByRole(catalyst, "input", isFake=true)
@@ -114,7 +129,7 @@ var Reaction = {
 }
 
 // AssignSourcePattern("Q");
-AssignSourcePattern("A");
+// AssignSourcePattern("A");
 AssignSourcePattern("I");
 
 function WithdrawStryngByRole(catalyst, role, isFake = false){

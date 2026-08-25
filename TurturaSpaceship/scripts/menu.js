@@ -35,7 +35,7 @@ var MainMenu = {name: "MainMenu" , children: [
     ]},
     {name: "Tutorial", children: [
         {name: "操作", function: () => OpenPage("tutorial/操作")},
-        {name: "自产自销", function: () => OpenPage("tutorial/自产自销")}
+        {name: "第一个机器", function: () => OpenPage("tutorial/第一个机器")},
     ]},
 ]}
 

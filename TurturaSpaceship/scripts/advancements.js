@@ -14,24 +14,42 @@ var advancements = {
             stryng: "Q",
             amount: 10,
         },
+        on_complete: () => {globalThis.ActivateAdvancement("苹果");},
     },
     "苹果": {
         description: "使用 srcA 得到 A 链素。",
+        on_complete: () => {globalThis.ActivateAdvancement("它变长了");},
     },
     "它变长了": {
         description: "使用 aq 催化剂组合 A 和 Q 。",
+        on_complete: () => {globalThis.ActivateAdvancement("多多益善");},
     },
     "多多益善": {
         description: "提交 100 个 AQ 。",
+        on_complete: () => {globalThis.ActivateAdvancement("套起来了");},
+        stryng_requirement: {
+            stryng: "AQ",
+            amount: 100,
+        },
     },
     "套起来了": {
         description: "提交 100 个 AAQ 。",
+        on_complete: () => {globalThis.ActivateAdvancement("举一反三");},
+        stryng_requirement: {
+            stryng: "AAQ",
+            amount: 100,
+        },
     },
     "举一反三": {
         description: "提交 100 个 AAQII[气泡水] 。它很好喝。",
+        on_complete: () => {globalThis.ActivateAdvancement("QQ弹弹");},
+        stryng_requirement: {
+            stryng: "AAQII",
+            amount: 100,
+        },
     },
     "QQ弹弹": {
-        description: "使用 srcQII 得到 QQ 链素。",
+        description: "使用 srcQQ 得到 QQ 链素。",
     },
     "差速离心法": {
         description: "使用 筛选器 运输链素。",
