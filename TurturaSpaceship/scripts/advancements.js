@@ -132,6 +132,9 @@ function BakeAdvancements(){
                 return game_state.storage[stryng] >= amount; // 检查是否满足要求 // undef一定返回false
             }
         }
+        if (!advancements[advancement].completing_guard){
+            advancements[advancement].completing_guard = () => {return false;} // 说明这个成就当前版本只是占位
+        }
     }
 }
 
@@ -155,6 +158,9 @@ function ActivateAdvancement(advancement_name) {
     }
     
     console.log(`成就 ${advancement_name} 已激活`);
+    AddAdvancementActivatedToMenu(advancement_name);
+}
+function AddAdvancementActivatedToMenu(advancement_name) {
     let advancement_menu = globalThis.MainMenu.children.find(child => child.name === "Advancements");
     if (advancement_menu.children.some(child => child.name === advancement_name)) return;
     advancement_menu.children.push({
@@ -165,15 +171,18 @@ function ActivateAdvancement(advancement_name) {
     globalThis.RefreshMenu();
 }
 
-function CompleteAdvancement(advancement_name) {
+function CompleteAdvancement(advancement_name, completed_time = Date.now(), completed_tick = game_state.tick) {
     // 预防性激活
     ActivateAdvancement(advancement_name);
     // 完成
     if (game_state.advancement_state[advancement_name].is_completed) return;
     game_state.advancement_state[advancement_name].is_completed = true;
-    game_state.advancement_state[advancement_name].completed_time = Date.now();
-    game_state.advancement_state[advancement_name].completed_tick = game_state.tick;
+    game_state.advancement_state[advancement_name].completed_time = completed_time;
+    game_state.advancement_state[advancement_name].completed_tick = completed_tick;
     console.log(`成就 ${advancement_name} 已完成`);
+    AddAdvancementCompletedToMenu(advancement_name);
+}
+function AddAdvancementCompletedToMenu(advancement_name) {
     let advancement_menu = globalThis.MainMenu.children.find(child => child.name === "Advancements");
     let child = advancement_menu.children.find(child => child.name === advancement_name);
     child.color = "green"; // 成就图标变绿

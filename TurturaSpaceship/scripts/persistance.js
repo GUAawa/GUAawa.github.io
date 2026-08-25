@@ -73,13 +73,34 @@ function UpdateSaveMenu(){
 }
 
 function LoadGame(slot = "autosave") {
+    // 初步读取
     var data = localStorage.getItem(`save_${slot}`);
     if (!data) {
         alert("No save found!");
         return;
     }
     game_state = JSON.parse(data); // 解析保存的数据
+
+    // 适配新环境
+    // time
     game_state.time.last = performance.now();
+    // 踩一下成就，赚Menu
+    for (let advancement_name in game_state.advancement_state) {
+        console.log(advancement_name, game_state.advancement_state[advancement_name])
+        if (game_state.advancement_state[advancement_name].is_activated) {
+            AddAdvancementActivatedToMenu(advancement_name); // 重新激活成就
+        }
+        if (game_state.advancement_state[advancement_name].is_completed) {
+            AddAdvancementCompletedToMenu(advancement_name); // 重新完成成就
+        }
+    }
+    // 修一下guard
+    const names = Object.keys(game_state.completing_guards).filter(advancement_name => !game_state.advancement_state[advancement_name].is_completed);
+    game_state.completing_guards = {}
+    for (let name of names) {
+        game_state.completing_guards[name] = true;
+    }
+
     // 版本适配
     if (game_state.persistance_info.version !== Config.version) {
         alert("存档版本是过时的，我们会尝试兼容它。");
