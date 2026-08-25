@@ -11,6 +11,9 @@ var MainMenu = {name: "MainMenu" , children: [
             {name: "Qbed", function: () => setInteractStateBuilding("Qbed")},
         ]}
     ]},
+    {name: "Tools", children: [
+        {name: "Burn Stryng", function: () => setInteractStateDeleteStryng()}
+    ]},
     {name: "Documentation", children: [
         {name: "stryng", function: () => OpenPage("documentation/stryng")},
         {name: "transportation", function: () => OpenPage("documentation/transportation")},
@@ -37,6 +40,9 @@ var MainMenu = {name: "MainMenu" , children: [
         {name: "操作", function: () => OpenPage("tutorial/操作")},
         {name: "第一个机器", function: () => OpenPage("tutorial/第一个机器")},
     ]},
+    {name: "Save&Load", children: [
+        {name: "保存", function: () => {alert("保存功能没有初始化")}}
+    ]}
 ]}
 
 function OpenPage(page){

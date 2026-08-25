@@ -1,7 +1,7 @@
 function NewGame() {
     game_state = {
         persistance_info:{
-            version: 0,
+            version: Config.version,
             last_update: Date.now(),
         },
         time: {
@@ -24,6 +24,7 @@ function NewGame() {
         advancement_state: {},
         storage: {},
         completing_guards: {},
+        burn_stryng_tick_pool: Config.burn_stryng_tick_pool_max,
     }
 }
 
@@ -31,6 +32,44 @@ function SaveGame(slot = "autosave") {
     game_state.persistance_info.last_update = Date.now(); // 更新最后更新时间
     var data = JSON.stringify(game_state);
     localStorage.setItem(`save_${slot}`, data);
+    UpdateSaveMenu(); // 更新保存菜单
+}
+
+function UpdateSaveMenu(){
+    let saveMenu = MainMenu.children.find(child => child.name === "Save&Load");
+    // 初始化
+    saveMenu.children = [
+        {name: "保存", function: () => {
+            let slot = prompt("请输入存档名：");
+            if (!slot) {
+                alert("非法的存档名！")
+                return;
+            }
+            SaveGame(slot);
+            alert(`成功保存游戏于 ${slot}`);
+        }},
+        {name: "删除", function: () => {
+            let slot = prompt("请输入存档名：");
+            if (!slot) {
+                alert("非法的存档名！")
+                return;
+            }
+            if (!confirm(`确定要删除存档 ${slot} 吗？`)) {
+                return;
+            }
+            DeleteGame(slot);
+            alert(`成功删除存档 ${slot}`);
+        }},
+    ]
+    // 遍历所有存档
+    const slots = Object.keys(localStorage).filter(key => key.startsWith("save_")).map(
+        (key) => key.replace("save_", "")
+    );
+    for (let slot of slots){
+        saveMenu.children.push({name: slot, function: () => {LoadGame(slot);}})
+    }
+
+    RefreshMenu(); // 刷新菜单
 }
 
 function LoadGame(slot = "autosave") {
@@ -41,4 +80,30 @@ function LoadGame(slot = "autosave") {
     }
     game_state = JSON.parse(data); // 解析保存的数据
     game_state.time.last = performance.now();
+    // 版本适配
+    if (game_state.persistance_info.version !== Config.version) {
+        alert("存档版本是过时的，我们会尝试兼容它。");
+        const result = FixVersion();
+        if (!result) {
+            alert("版本兼容失败，请不要继续使用这个存档。");
+        }else {
+            alert("版本兼容成功！");
+        }
+    }
+}
+
+function FixVersion() {
+    // 链素删除更新 0 -> 1
+    if (game_state.persistance_info.version <= 0) { 
+        game_state.burn_stryng_tick_pool = Config.burn_stryng_tick_pool_max;
+        game_state.persistance_info.version = 1
+        console.log("version: 0 -> 1")
+    }
+    return game_state.persistance_info.version === Config.version; // 返回版本是否兼容
+}
+
+function DeleteGame(slot) {
+    localStorage.removeItem(`save_${slot}`); // 删除保存的数据
+    UpdateSaveMenu(); // 更新保存菜单
+    RefreshMenu(); // 刷新菜单
 }

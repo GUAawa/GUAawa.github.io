@@ -30,8 +30,12 @@ function handleInput() {
 
     if (KeyboardInput['`']) {
         interact_state = {mode:"create_stryng"}
-        dashboard.innerHTML = "Create Stryng";
+        dashboard.innerHTML = "Creating Stryng";
     };
+
+    if (KeyboardInput['backspace']) {
+        setInteractStateDeleteStryng();
+    }
     // build
     if (MouseInput['left']) {
         if (interact_state.mode === "build") {
@@ -47,6 +51,16 @@ function handleInput() {
                 SummonStryng(stryng_content, position);
             }
 
+        }else if (interact_state.mode === "delete_stryng") {
+            const position = Hex.hex_round(Hex.toHex(MouseInput['x'] + Render.camera.x, MouseInput['y'] + Render.camera.y));
+            const id = game_state.map.stryngs[Hex.toString(position)]
+            if (id && game_state.burn_stryng_tick_pool >= Config.burn_stryng_tick_cost){
+                // 扣款
+                game_state.burn_stryng_tick_pool -= Config.burn_stryng_tick_cost
+                // 删除链素
+                delete game_state.map.stryngs[Hex.toString(position)];
+                delete game_state.stryngs[id]; // 删除链素
+            }
         }
     }
     if (MouseInput['right']) {
@@ -59,6 +73,11 @@ function handleInput() {
             }
         }
     }
+}
+
+function setInteractStateDeleteStryng(){
+    interact_state = {mode:"delete_stryng"}
+    dashboard.innerHTML = `Burning Stryng - Tick Pool: ${game_state.burn_stryng_tick_pool}/${Config.burn_stryng_tick_pool_max}`;
 }
 
 function DeleteBuilding(building){
@@ -85,12 +104,23 @@ function tickGame(){
     // Update game state here
     console.log(`Tick: ${game_state.tick}`)
     game_state.tick++;
+    
     if(game_state.tick %2 == 0){
         moveStryngs();
     }else if (game_state.tick %2 == 1){
         reactCatalysts();
     }
     CheckCompletementGuard();
+
+    if (game_state.burn_stryng_tick_pool < Config.burn_stryng_tick_pool_max) {
+        game_state.burn_stryng_tick_pool++;
+        if (interact_state.mode === "delete_stryng") setInteractStateDeleteStryng();
+    }
+
+    if (game_state.tick % Config.autosave_interval == 0) {
+        SaveGame();
+        console.log(`autosave at tick ${game_state.tick}`);
+    }
 }
 
 function reactCatalysts(){
@@ -261,3 +291,5 @@ requestAnimationFrame(loop);
 ActivateAdvancement("坠落");
 
 UpdateStorageContent();
+
+UpdateSaveMenu();
