@@ -98,6 +98,10 @@ function GoBackMenu(){
     DisplayMenu(menu_stack[menu_stack.length - 1]); // 返回上一级菜单
 }
 
+function RefreshMenu(){
+    DisplayMenu(menu_stack[menu_stack.length - 1]); // 更新菜单内容
+}
+
 function UpdateStorageContent(){
     let content = "";
     for (const stryng in game_state.storage){
@@ -105,6 +109,7 @@ function UpdateStorageContent(){
     }
     const storage_menu = MainMenu.children.find(child => child.name === "Storage")
     storage_menu.content = content; // 更新存储内容
+    globalThis.RefreshMenu();
 }
 
 GotoMenu(MainMenu); // 显示主菜单

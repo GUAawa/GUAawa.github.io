@@ -159,6 +159,7 @@ function ActivateAdvancement(advancement_name) {
         content: advancements[advancement_name].description, 
         color: "grey", 
     });
+    globalThis.RefreshMenu();
 }
 
 function CompleteAdvancement(advancement_name) {
