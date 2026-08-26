@@ -36,43 +36,65 @@ var ConstructBuilding = {
         game_state.map.buildings[Hex.toString(position)] = building.id;
         return building;
     },
-    Abed: (position) => {
-        const building = {
-            type: "Abed",
-            position,
-            id: game_state.id_controller.building++,
-            class: "Bed"
-        };
-        game_state.buildings[building.id] = building;
-        game_state.map.buildings[Hex.toString(position)] = building.id;
-        SearchCatalyst(building);
-        return building;
+}
+var DrawBuilding = {
+    Vortexer : (building) => {
+        Render.drawHexByHex(building.position, "#ffd036", true, true);
+        Render.drawHexByHex(building.position, "#000000", true, false);
+        //写字
+        const pixel = Hex.toPixel(building.position);
+        ctx.fillStyle = "#000000";
+        ctx.font = `${Config.hex_size * 0.8}px Arial`;
+        ctx.textAlign = "center";
+        ctx.fillText("🔄", pixel.x - Render.camera.x, pixel.y + Config.hex_size * 0.3 - Render.camera.y);
     },
-    Ibed: (position) => {
-        const building = {
-            type: "Ibed",
-            position,
-            id: game_state.id_controller.building++,
-            class: "Bed"
-        };
-        game_state.buildings[building.id] = building;
-        game_state.map.buildings[Hex.toString(position)] = building.id;
-        SearchCatalyst(building);
-        return building;
+    Repulser : (building) => {
+        Render.drawHexByHex(building.position, "#36ffa1", true, true);
+        Render.drawHexByHex(building.position, "#000000", true, false);
+        //写字
+        const pixel = Hex.toPixel(building.position);
+        ctx.fillStyle = "#000000";
+        ctx.font = `${Config.hex_size * 0.8}px Arial`;
+        ctx.textAlign = "center";
+        ctx.fillText("🗯️", pixel.x - Render.camera.x, pixel.y + Config.hex_size * 0.3 - Render.camera.y);
     },
-    Qbed: (position) => {
-        const building = {
-            type: "Qbed",
-            position,
-            id: game_state.id_controller.building++,
-            class: "Bed"
-        };
-        game_state.buildings[building.id] = building;
-        game_state.map.buildings[Hex.toString(position)] = building.id;
-        SearchCatalyst(building);
-        return building;
+    Slide : (building) => {
+        Render.drawHexByHex(building.position, "#36f2ff", true, true);
     },
 }
+
+function AssignBed(charium, bg_color, text_color="#0000007d"){
+    ConstructBuilding[`${charium}bed`] = (position) => {
+        const building = {
+            type: `${charium}bed`,
+            position,
+            id: game_state.id_controller.building++,
+            class: "Bed"
+        };
+        game_state.buildings[building.id] = building;
+        game_state.map.buildings[Hex.toString(position)] = building.id;
+        SearchCatalyst(building);
+        return building;
+    }
+    DrawBuilding[`${charium}bed`] = (building) => {
+        Render.drawHexByHex(building.position, bg_color, true, true);
+        const pixel = Hex.toPixel(building.position);
+        ctx.fillStyle = text_color;
+        ctx.font = `${Config.hex_size * 1.4}px Arial Bold`;
+        ctx.textAlign = "center";
+        ctx.fillText(charium, pixel.x - Render.camera.x, pixel.y + Config.hex_size * 0.5 - Render.camera.y);
+    }
+    const submenu = {
+        name: `${charium}bed`,
+        function: () => setInteractStateBuilding(`${charium}bed`),
+    }
+    const BedsMenu = MainMenu.children.find(child => child.name === "Buildings").children.find(child => child.name === "Beds")
+    BedsMenu.children.push(submenu);
+}
+AssignBed("A","#542828");
+AssignBed("G","#185525");
+AssignBed("I","#284f54");
+AssignBed("Q","#425428");
 
 function HasStryng(position){
     const stryng_id = game_state.map.stryngs[Hex.toString(position)];
@@ -166,56 +188,6 @@ var Transport = {
             game_state.stryngs[target_id].velocity.q += entry.force.q;
             game_state.stryngs[target_id].velocity.r += entry.force.r;
         }
-    },
-}
-
-var DrawBuilding = {
-    Vortexer : (building) => {
-        Render.drawHexByHex(building.position, "#ffd036", true, true);
-        Render.drawHexByHex(building.position, "#000000", true, false);
-        //写字
-        const pixel = Hex.toPixel(building.position);
-        ctx.fillStyle = "#000000";
-        ctx.font = `${Config.hex_size * 0.8}px Arial`;
-        ctx.textAlign = "center";
-        ctx.fillText("🔄", pixel.x - Render.camera.x, pixel.y + Config.hex_size * 0.3 - Render.camera.y);
-    },
-    Repulser : (building) => {
-        Render.drawHexByHex(building.position, "#36ffa1", true, true);
-        Render.drawHexByHex(building.position, "#000000", true, false);
-        //写字
-        const pixel = Hex.toPixel(building.position);
-        ctx.fillStyle = "#000000";
-        ctx.font = `${Config.hex_size * 0.8}px Arial`;
-        ctx.textAlign = "center";
-        ctx.fillText("🗯️", pixel.x - Render.camera.x, pixel.y + Config.hex_size * 0.3 - Render.camera.y);
-    },
-    Slide : (building) => {
-        Render.drawHexByHex(building.position, "#36f2ff", true, true);
-    },
-    Abed: (building) => {
-        Render.drawHexByHex(building.position, "#542828", true, true);
-        const pixel = Hex.toPixel(building.position);
-        ctx.fillStyle = "#0000007d";
-        ctx.font = `${Config.hex_size * 1.4}px Arial Bold`;
-        ctx.textAlign = "center";
-        ctx.fillText("A", pixel.x - Render.camera.x, pixel.y + Config.hex_size * 0.5 - Render.camera.y);
-    },
-    Ibed: (building) => {
-        Render.drawHexByHex(building.position, "#284f54", true, true);
-        const pixel = Hex.toPixel(building.position);
-        ctx.fillStyle = "#0000007d";
-        ctx.font = `${Config.hex_size * 1.4}px Arial Bold`;
-        ctx.textAlign = "center";
-        ctx.fillText("I", pixel.x - Render.camera.x, pixel.y + Config.hex_size * 0.5 - Render.camera.y);
-    },
-    Qbed: (building) => {
-        Render.drawHexByHex(building.position, "#425428", true, true);
-        const pixel = Hex.toPixel(building.position);
-        ctx.fillStyle = "#0000007d";
-        ctx.font = `${Config.hex_size * 1.4}px Arial Bold`;
-        ctx.textAlign = "center";
-        ctx.fillText("Q", pixel.x - Render.camera.x, pixel.y + Config.hex_size * 0.5 - Render.camera.y);
     },
 }
 

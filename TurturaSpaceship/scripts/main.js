@@ -23,9 +23,15 @@ function handleInput() {
     if (KeyboardInput['3']) setInteractStateBuilding("Slide");
     
     if (KeyboardInput['shift']){
-        if (KeyboardInput['a']) setInteractStateBuilding("Abed");
-        if (KeyboardInput['i']) setInteractStateBuilding("Ibed");
-        if (KeyboardInput['q']) setInteractStateBuilding("Qbed");
+        for (const key in KeyboardInput){
+            if (key.length !== 1) continue;
+            if (!KeyboardInput[key]) continue;
+            const charium = key.toUpperCase();
+            if (Object.keys(ConstructBuilding).includes(`${charium}bed`)){
+                setInteractStateBuilding(`${charium}bed`); // 选床
+                break; // 只选一个床
+            }
+        }
     }
 
     if (KeyboardInput['`']) {
@@ -60,6 +66,9 @@ function handleInput() {
                 // 删除链素
                 delete game_state.map.stryngs[Hex.toString(position)];
                 delete game_state.stryngs[id]; // 删除链素
+                
+                // 成就
+                if (!IsAdvancementCompleted("无污染")) CompleteAdvancement("无污染");
             }
         }
     }
@@ -280,6 +289,12 @@ BakeAdvancements();
 MouseInput.init();
 KeyboardInput.init();
 
+for (const advancement_name in advancements){
+    if (advancements[advancement_name].default_activated){
+        ActivateAdvancement(advancement_name); // 默认激活成就
+    }
+}
+
 // 设定上这个是飞船遗骸
 ConstructBuilding.Vortexer({q:0,r:0});
 SummonStryng("QQ", {q:1,r:0});
@@ -287,8 +302,6 @@ SummonStryng("(AA)", {q:0,r:1});
 SummonStryng("RKH(", {q:-1,r:0});
 
 requestAnimationFrame(loop);
-
-ActivateAdvancement("坠落");
 
 UpdateStorageContent();
 

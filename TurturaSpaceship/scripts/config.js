@@ -5,9 +5,6 @@ var Config = {
     max_time_accumulated: 100000,
     camera_speed: 1, // 摄像机移动速度
     storage_stryng_amount_max: {
-        "Q": 50,
-        "AQ": 100,
-        "AAQ": 100,
         "AAQII": 1000,
     },
     autosave_interval: 1800, // 单位为tick。1800tick=5分钟

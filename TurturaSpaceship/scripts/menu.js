@@ -6,9 +6,7 @@ var MainMenu = {name: "MainMenu" , children: [
             {name: "Slide", function: () => setInteractStateBuilding("Slide")},
         ]},
         {name: "Beds", children: [
-            {name: "Abed", function: () => setInteractStateBuilding("Abed")},
-            {name: "Ibed", function: () => setInteractStateBuilding("Ibed")},
-            {name: "Qbed", function: () => setInteractStateBuilding("Qbed")},
+            // 自动注册
         ]}
     ]},
     {name: "Tools", children: [
@@ -25,8 +23,15 @@ var MainMenu = {name: "MainMenu" , children: [
             {name: "srcA", function: () => OpenPage("documentation/catalysts/srcA")},
             {name: "srcI", function: () => OpenPage("documentation/catalysts/srcI")},
             {name: "input", function: () => OpenPage("documentation/catalysts/input")},
+            {name: "srcQQ", function: () => OpenPage("documentation/catalysts/srcQQ")},
+            {name: "srcG", function: () => OpenPage("documentation/catalysts/srcG")},
+            {name: "trash", function: () => OpenPage("documentation/catalysts/trash")},
+            {name: "gq", function: () => OpenPage("documentation/catalysts/gq")},
         ]},
-        {name: "!!!Do not touch!!!", function: () => window.open("https://www.bilibili.com/video/BV1GJ411x7h7/?spm_id_from=333.337.search-card.all.click&vd_source=d58769cd17feec8c54efcb9233da31cd", "_blank")}
+        {name: "!!!Do not touch!!!", function: () => {
+            if(!IsAdvancementCompleted("你被骗了")) CompleteAdvancement("你被骗了"); // 你被骗了
+            window.open("https://www.bilibili.com/video/BV1GJ411x7h7/?spm_id_from=333.337.search-card.all.click&vd_source=d58769cd17feec8c54efcb9233da31cd", "_blank")
+        }}
     ]},
     {name: "Advancements", children: []},
     {name: "Storage", content: "Storage not initialized."},

@@ -26,7 +26,34 @@ var CatalystPattern = {
         {type: "Abed", role: "decoration1", position: {q:0,r:1}},
         {type: "Qbed", role: "decoration2", position: {q:1,r:0}},
         {type: "Qbed", role: "decoration3", position: {q:-1,r:1}},
-    ]
+    ],
+    srcQQ: [
+        {type: `Ibed`, role: "generator", position: {q:2,r:0}},
+        {type: `Ibed`, role: "fake_gen1", position: {q:0,r:-2}},
+        {type: `Ibed`, role: "fake_gen2", position: {q:-2,r:2}},
+        {type: "Qbed", role: "decoration1", position: {q:1,r:0}},
+        {type: "Qbed", role: "decoration1", position: {q:-1,r:0}},
+        {type: "Qbed", role: "decoration1", position: {q:0,r:1}},
+        {type: "Qbed", role: "decoration1", position: {q:0,r:-1}},
+        {type: "Qbed", role: "decoration1", position: {q:1,r:-1}},
+        {type: "Qbed", role: "decoration1", position: {q:-1,r:1}},
+    ],
+    gq: [
+        {type: `Gbed`, role: "decoration1", position: {q:0,r:0}},
+        {type: `Qbed`, role: "reactant", position: {q:-1,r:1}},
+        {type: `Qbed`, role: "product", position: {q:1,r:1}},
+        {type: `Abed`, role: "appendix", position: {q:0,r:-1}},
+        {type: `Ibed`, role: "waste", position: {q:2,r:-1}},
+    ],
+    trash: [
+        {type: "Ibed", role: "trash", position: {q:0,r:0}},
+        {type: "Abed", role: "decoration1", position: {q:1,r:1}},
+        {type: "Abed", role: "decoration2", position: {q:2,r:-1}},
+        {type: "Abed", role: "decoration3", position: {q:-2,r:1}},
+        {type: "Abed", role: "decoration4", position: {q:-1,r:-1}},
+        {type: "Qbed", role: "decoration5", position: {q:1,r:-2}},
+        {type: "Qbed", role: "decoration6", position: {q:-1,r:2}},
+    ],
 }
 
 function AssignSourcePattern(content){ // 目前只支持单字符
@@ -44,6 +71,16 @@ function AssignSourcePattern(content){ // 目前只支持单字符
     }
 }
 
+function SearchSubstryngs(substryng, stryng){
+    const positions = [];
+    let pos = stryng.indexOf(substryng);
+    while (pos !== -1) {
+        positions.push(pos);
+        pos = stryng.indexOf(substryng, pos + 1); // 跳过当前匹配，避免重叠死循环
+    }
+    return positions;
+}
+
 var Reaction = {
     aq: (catalyst) => {
         const reactant = WithdrawStryngByRole(catalyst, "reactant", true)
@@ -54,12 +91,7 @@ var Reaction = {
         if (reactant === null) return false;
         // 执行反应
         // 寻找reactant中所有的'Q'子串
-        const positions = [];
-        let pos = reactant.indexOf('Q');
-        while (pos !== -1) {
-            positions.push(pos);
-            pos = reactant.indexOf('Q', pos + 'Q'.length); // 跳过当前匹配，避免重叠死循环
-        }
+        const positions = SearchSubstryngs('Q', reactant); // 找到reactant中所有的'Q'子串
         if (positions.length === 0) return false;
         const position = positions[Math.floor(Math.random() * positions.length)]
         const product = reactant.slice(0, position) + 'AQ' + reactant.slice(position + 1);
@@ -79,12 +111,7 @@ var Reaction = {
         if (reactant === null) return false;
         // 执行反应
         // 寻找reactant中所有的'Q'子串
-        const positions = [];
-        let pos = reactant.indexOf('Q');
-        while (pos !== -1) {
-            positions.push(pos);
-            pos = reactant.indexOf('Q', pos + 'Q'.length); // 跳过当前匹配，避免重叠死循环
-        }
+        const positions = SearchSubstryngs('Q', reactant); // 找到reactant中所有的'Q'子串
         if (positions.length === 0) return false;
         const position = positions[Math.floor(Math.random() * positions.length)]
         const product = reactant.slice(0, position) + 'QI' + reactant.slice(position + 1);
@@ -125,12 +152,54 @@ var Reaction = {
         // 成就检测
         /*成就检测不在这里做了，用成就系统里的completement_guard实现 */
         return true;
-    }
+    },
+    srcQQ: (catalyst) => {
+        if (!IsAdvancementCompleted("QQ弹弹")) CompleteAdvancement("QQ弹弹"); //成就
+
+        const stryng_old = WithdrawStryngByRole(catalyst, "generator", true)
+        if (stryng_old !== null) return false;
+        TransferStryngByRole(catalyst, "generator", "QQ")
+        return true;
+    },
+    gq: (catalyst) => {
+        const appendix = WithdrawStryngByRole(catalyst, "appendix", true)
+        const reactant = WithdrawStryngByRole(catalyst, "reactant", true)
+        const product_old = WithdrawStryngByRole(catalyst, "product", true)
+        const waste_old = WithdrawStryngByRole(catalyst, "waste", true)
+        // 检测模式
+        if (appendix == 'G'){
+            if (product_old !== null) return false;
+            if (waste_old !== null) return false;
+            if (reactant === null) return false;
+            // 位点定位
+            const positions = SearchSubstryngs('Q', reactant); // 找到reactant中所有的'Q'子串
+            if (positions.length === 0) return false;
+            // 选择位点
+            const position = positions[Math.floor(Math.random() * positions.length)]
+            // 创造链素
+            const product = reactant.slice(0, position) + 'G' + reactant.slice(position + 1);
+            const waste = "Q"
+            // IO
+            WithdrawStryngByRole(catalyst, "reactant");
+            WithdrawStryngByRole(catalyst, "appendix");
+            TransferStryngByRole(catalyst, "product", product);
+            TransferStryngByRole(catalyst, "waste", waste);
+            return true; // 成功
+        }else if (appendix == 'Q'){
+            console.log("unimplimented!")
+        }
+    },
+    trash: (catalyst) => {
+        const trash = WithdrawStryngByRole(catalyst, "trash", true)
+        if (trash === null) return false;
+        if (trash.length != 4) return false;
+        WithdrawStryngByRole(catalyst, "trash");
+        return true;
+    },
 }
 
-// AssignSourcePattern("Q");
-// AssignSourcePattern("A");
 AssignSourcePattern("I");
+AssignSourcePattern("G");
 
 function WithdrawStryngByRole(catalyst, role, isFake = false){
     const bed_id = catalyst.beds[role]
