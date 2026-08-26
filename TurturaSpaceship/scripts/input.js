@@ -3,6 +3,7 @@ var MouseInput = {
     y: 0,
     left: false,
     right: false,
+    wheel: 0,
     init: function() {
         const canvas = document.getElementById('gameCanvas');
         canvas.addEventListener('mousemove', (e) => {
@@ -20,6 +21,11 @@ var MouseInput = {
         })
         canvas.addEventListener('contextmenu', (e) => {
             e.preventDefault();
+        })
+        canvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            MouseInput.wheel += e.deltaY;
+            console.log(MouseInput.wheel);
         })
     }
 }

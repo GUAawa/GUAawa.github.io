@@ -10,18 +10,24 @@ var interact_state = {
 }
 
 function handleInput() {
-    // move camera with wasd
+    // camera
     if (!KeyboardInput['shift']){
         if (KeyboardInput['w']) Render.camera.y -= Config.camera_speed;
         if (KeyboardInput['s']) Render.camera.y += Config.camera_speed;
         if (KeyboardInput['a']) Render.camera.x -= Config.camera_speed;
         if (KeyboardInput['d']) Render.camera.x += Config.camera_speed;
     }
+    if (MouseInput.wheel != 0){
+        const factor = 2**(MouseInput['wheel'] * Config.zooming_factor);
+        Config.hex_size /= factor;
+        MouseInput.wheel = 0; // 清除滚轮事件
+    }
     // mode
     if (KeyboardInput['1']) setInteractStateBuilding("Vortexer");
     if (KeyboardInput['2']) setInteractStateBuilding("Repulser");
     if (KeyboardInput['3']) setInteractStateBuilding("Slide");
     if (KeyboardInput['4']) setInteractStateBuilding("Filter");
+    if (KeyboardInput['5']) setInteractStateBuilding("Swapper");
     
     if (KeyboardInput['shift']){
         for (const key in KeyboardInput){

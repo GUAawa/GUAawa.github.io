@@ -5,6 +5,7 @@ var MainMenu = {name: "MainMenu" , children: [
             {name: "Repulser", function: () => setInteractStateBuilding("Repulser")},
             {name: "Slide", function: () => setInteractStateBuilding("Slide")},
             {name: "Filter", function: () => setInteractStateBuilding("Filter")},
+            {name: "Swapper", function: () => setInteractStateBuilding("Swapper")},
         ]},
         {name: "Beds", children: [
             // 自动注册
@@ -28,6 +29,7 @@ var MainMenu = {name: "MainMenu" , children: [
             {name: "srcG", function: () => OpenPage("documentation/catalysts/srcG")},
             {name: "trash", function: () => OpenPage("documentation/catalysts/trash")},
             {name: "gq", function: () => OpenPage("documentation/catalysts/gq")},
+            {name: "srcK(Q) K(E) K(H) K(QQ)", function: () => OpenPage("documentation/catalysts/srcK(Q) K(E) K(H) K(QQ)")}
         ]},
         {name: "!!!Do not touch!!!", function: () => {
             if(!IsAdvancementCompleted("你被骗了")) CompleteAdvancement("你被骗了"); // 你被骗了

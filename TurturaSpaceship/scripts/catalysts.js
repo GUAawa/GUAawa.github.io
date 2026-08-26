@@ -54,6 +54,15 @@ var CatalystPattern = {
         {type: "Qbed", role: "decoration5", position: {q:1,r:-2}},
         {type: "Qbed", role: "decoration6", position: {q:-1,r:2}},
     ],
+    "srcK(Q)": [
+        {type: "Ibed", role: "generator", position: {q:0,r:0}},
+        {type: `Kbed`, role: "decoration1", position: {q:1,r:0}},
+        {type: `Qbed`, role: "decoration2", position: {q:1,r:1}},
+        {type: `Qbed`, role: "decoration3", position: {q:2,r:-1}},
+        {type: `Kbed`, role: "decoration4", position: {q:-1,r:0}},
+        {type: `Qbed`, role: "decoration5", position: {q:-1,r:-1}},
+        {type: `Qbed`, role: "decoration6", position: {q:-2,r:1}},
+    ],
 }
 
 function AssignSourcePattern(content){ // 目前只支持单字符
@@ -67,6 +76,14 @@ function AssignSourcePattern(content){ // 目前只支持单字符
         const stryng_old = WithdrawStryngByRole(catalyst, "generator", true)
         if (stryng_old !== null) return false;
         TransferStryngByRole(catalyst, "generator", content)
+        return true;
+    }
+}
+function AssignSourceReaction(stryng){
+    Reaction[`src${stryng}`] = (catalyst) => {
+        const stryng_old = WithdrawStryngByRole(catalyst, "generator", true)
+        if (stryng_old !== null) return false;
+        TransferStryngByRole(catalyst, "generator", stryng)
         return true;
     }
 }
@@ -219,6 +236,8 @@ var Reaction = {
 
 AssignSourcePattern("I");
 AssignSourcePattern("G");
+
+AssignSourceReaction("K(Q)");
 
 function WithdrawStryngByRole(catalyst, role, isFake = false){
     const bed_id = catalyst.beds[role]

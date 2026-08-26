@@ -1,6 +1,7 @@
 var Config = {
     version: 1,
-    hex_size: 32,
+    hex_size: 32, // 这只是个初始值，可以被滚轮移动
+    zooming_factor: 0.005, // 值越大缩放越轻松
     tick_duration: 1000 / 12, // 逻辑刻，12刻(6周期)每秒，目前因为debug降频
     max_time_accumulated: 100000,
     camera_speed: 1, // 摄像机移动速度

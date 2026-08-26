@@ -55,7 +55,20 @@ var ConstructBuilding = {
         game_state.buildings[building.id] = building;
         game_state.map.buildings[Hex.toString(position)] = building.id;
         return building;
-    }
+    },
+    Swapper : (position) => {
+        if (HasStryng(position)) return;
+        const building = {
+            type: "Swapper",
+            position,
+            id: game_state.id_controller.building++,
+            class: "Transporter",
+            is_obstacle: true,
+        };
+        game_state.buildings[building.id] = building;
+        game_state.map.buildings[Hex.toString(position)] = building.id;
+        return building;
+    },
 }
 var DrawBuilding = {
     Vortexer : (building) => {
@@ -91,6 +104,16 @@ var DrawBuilding = {
         ctx.textAlign = "center";
         ctx.fillText(building.filter_stryng, pixel.x - Render.camera.x, pixel.y + Config.hex_size * 0.3 - Render.camera.y);
     },
+    Swapper : (building) => {
+        Render.drawHexByHex(building.position, "#9a6c8c", true, true);
+        Render.drawHexByHex(building.position, "#000000", true, false);
+        //写字
+        const pixel = Hex.toPixel(building.position);
+        ctx.fillStyle = "#000000";
+        ctx.font = `${Config.hex_size * 0.8}px Arial`;
+        ctx.textAlign = "center";
+        ctx.fillText("↔️", pixel.x - Render.camera.x, pixel.y + Config.hex_size * 0.3 - Render.camera.y);
+    },
 }
 
 function AssignBed(charium, bg_color, text_color="#0000007d"){
@@ -122,8 +145,11 @@ function AssignBed(charium, bg_color, text_color="#0000007d"){
     BedsMenu.children.push(submenu);
 }
 AssignBed("A","#542828");
+AssignBed("E","#65b2f1");
 AssignBed("G","#185525");
+AssignBed("H","#dfa51d");
 AssignBed("I","#284f54");
+AssignBed("K","#5a005f");
 AssignBed("Q","#425428");
 
 function HasStryng(position){
@@ -252,7 +278,30 @@ var Transport = {
 
             if (!IsAdvancementCompleted("差速离心法")) CompleteAdvancement("差速离心法");
         }
-    }
+    },
+    Swapper : (building) => {
+        // 半频
+        if (game_state.tick % 4 != 0) return;
+        // 检测周围一圈的链素，对其施加向外推力
+        const force_table = [
+            {rel_pos:{q:1,r:0},force:{q:-2,r:0}},
+            {rel_pos:{q:0,r:1},force:{q:0,r:-2}},
+            {rel_pos:{q:1,r:-1},force:{q:-2,r:2}},
+            {rel_pos:{q:0,r:-1},force:{q:0,r:2}},
+            {rel_pos:{q:-1,r:0},force:{q:2,r:0}},
+            {rel_pos:{q:-1,r:1},force:{q:2,r:-2}},
+        ]
+        for (const entry of force_table) {
+            const target_pos = Hex.add(building.position, entry.rel_pos);
+            const target_id = game_state.map.stryngs[Hex.toString(target_pos)];
+            if (target_id === undefined) continue;
+            const building_that_id = game_state.map.buildings[Hex.toString(target_pos)];
+            const building_that = game_state.buildings[building_that_id];
+            if (building_that && building_that.type === "Slide") continue; //滑道豁免
+            game_state.stryngs[target_id].velocity.q += entry.force.q;
+            game_state.stryngs[target_id].velocity.r += entry.force.r;
+        }
+    },
 }
 
 function GetBuildingType(position){
