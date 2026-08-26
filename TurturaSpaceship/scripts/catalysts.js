@@ -210,6 +210,9 @@ var Reaction = {
         if (trash === null) return false;
         if (trash.length != 4) return false;
         WithdrawStryngByRole(catalyst, "trash");
+
+        if (!IsAdvancementCompleted("无污染")) CompleteAdvancement("无污染"); //成就
+
         return true;
     },
 }

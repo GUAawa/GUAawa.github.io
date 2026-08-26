@@ -65,7 +65,7 @@ var advancements = {
         description: "使用 筛选器 运输链素。",
     },
     "无污染": {
-        description: "使用 trashI 催化剂销毁长度恰为 4 的链素。",
+        description: "使用 trash 催化剂销毁长度恰为 4 的链素。",
     },
     "有污染": {
         description: "手动销毁一个长度超过 4 的链素。"

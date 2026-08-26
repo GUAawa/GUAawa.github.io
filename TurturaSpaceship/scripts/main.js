@@ -69,7 +69,7 @@ function handleInput() {
                 delete game_state.stryngs[id]; // 删除链素
                 
                 // 成就
-                if (!IsAdvancementCompleted("无污染")) CompleteAdvancement("无污染");
+                if (!IsAdvancementCompleted("有污染")) CompleteAdvancement("有污染");
             }
         }
     }
