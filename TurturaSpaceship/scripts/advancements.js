@@ -54,6 +54,11 @@ var advancements = {
         on_complete: () => {
             globalThis.ActivateAdvancement("差速离心法");
             globalThis.ActivateAdvancement("无污染");
+            globalThis.ActivateAdvancement("只是玩具");
+            globalThis.ActivateAdvancement("残次品");
+            globalThis.ActivateAdvancement("不够火热");
+            globalThis.ActivateAdvancement("害羞羞");
+            globalThis.ActivateAdvancement("定向选择");
         },
     },
     "差速离心法": {
@@ -98,7 +103,10 @@ var advancements = {
         stryng_requirement: {
             stryng: "QG",
             amount: 100,
-        }
+        },
+        on_complete: () => {
+            globalThis.ActivateAdvancement("足够火热");
+        },
     },
     "足够火热": {
         description: "提交 500 个 AAAAQQ[高能燃料] 。公路旅行必备。",

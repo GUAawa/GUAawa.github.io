@@ -1,3 +1,4 @@
+const gameInput = document.getElementById("gameInputStryng");
 var ConstructBuilding = {
     Vortexer : (position) => {
         if (HasStryng(position)) return;
@@ -36,6 +37,25 @@ var ConstructBuilding = {
         game_state.map.buildings[Hex.toString(position)] = building.id;
         return building;
     },
+    Filter : (position) => {
+        // 获取配置信息
+        const filter_stryng = gameInput.value;
+        if (filter_stryng.length != 2){
+            return;
+        }
+        if (HasStryng(position)) return;
+        const building = {
+            type: "Filter",
+            position,
+            id: game_state.id_controller.building++,
+            class: "Transporter",
+            is_obstacle: true,
+            filter_stryng: filter_stryng, // 过滤窗口
+        };
+        game_state.buildings[building.id] = building;
+        game_state.map.buildings[Hex.toString(position)] = building.id;
+        return building;
+    }
 }
 var DrawBuilding = {
     Vortexer : (building) => {
@@ -60,6 +80,16 @@ var DrawBuilding = {
     },
     Slide : (building) => {
         Render.drawHexByHex(building.position, "#36f2ff", true, true);
+    },
+    Filter : (building) => {
+        Render.drawHexByHex(building.position, "#ff7a52", true, true);
+        Render.drawHexByHex(building.position, "#000000", true, false);
+        //写字
+        const pixel = Hex.toPixel(building.position);
+        ctx.fillStyle = "#ffea00";
+        ctx.font = `${Config.hex_size * 0.8}px Arial`;
+        ctx.textAlign = "center";
+        ctx.fillText(building.filter_stryng, pixel.x - Render.camera.x, pixel.y + Config.hex_size * 0.3 - Render.camera.y);
     },
 }
 
@@ -189,6 +219,40 @@ var Transport = {
             game_state.stryngs[target_id].velocity.r += entry.force.r;
         }
     },
+    Filter : (building) => {
+        const unmatched_table = [
+            {rel_pos:{q:1,r:0},force:{q:0,r:-1}},
+            {rel_pos:{q:0,r:1},force:{q:1,r:-1}},
+            {rel_pos:{q:1,r:-1},force:{q:-1,r:0}},
+            {rel_pos:{q:0,r:-1},force:{q:-1,r:1}},
+            {rel_pos:{q:-1,r:0},force:{q:0,r:1}},
+            {rel_pos:{q:-1,r:1},force:{q:1,r:0}},
+        ]
+        const matched_table = [
+            {rel_pos:{q:1,r:0},force:{q:1,r:-1}},
+            {rel_pos:{q:0,r:1},force:{q:1,r:0}},
+            {rel_pos:{q:1,r:-1},force:{q:0,r:-1}},
+            {rel_pos:{q:0,r:-1},force:{q:-1,r:0}},
+            {rel_pos:{q:-1,r:0},force:{q:-1,r:1}},
+            {rel_pos:{q:-1,r:1},force:{q:0,r:1}},
+        ]
+        for (let i = 0; i < 6; i++) {
+            const rel_pos = unmatched_table[i].rel_pos;
+            const target_pos = Hex.add(building.position, rel_pos);
+            const target_id = game_state.map.stryngs[Hex.toString(target_pos)];
+            if (target_id === undefined) continue;
+            const building_that_id = game_state.map.buildings[Hex.toString(target_pos)];
+            const building_that = game_state.buildings[building_that_id];
+            if (building_that && building_that.type === "Slide") continue; //滑道豁免
+            const stryng = game_state.stryngs[target_id];
+            const is_matched = stryng.content.includes(building.filter_stryng);
+            const force = is_matched ? matched_table[i].force : unmatched_table[i].force;
+            game_state.stryngs[target_id].velocity.q += force.q;
+            game_state.stryngs[target_id].velocity.r += force.r;
+
+            if (!IsAdvancementCompleted("差速离心法")) CompleteAdvancement("差速离心法");
+        }
+    }
 }
 
 function GetBuildingType(position){

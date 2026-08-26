@@ -186,7 +186,23 @@ var Reaction = {
             TransferStryngByRole(catalyst, "waste", waste);
             return true; // 成功
         }else if (appendix == 'Q'){
-            console.log("unimplimented!")
+            if (product_old !== null) return false;
+            if (waste_old !== null) return false;
+            if (reactant === null) return false;
+            // 位点定位
+            const positions = SearchSubstryngs('G', reactant); // 找到reactant中所有的'Q'子串
+            if (positions.length === 0) return false;
+            // 选择位点
+            const position = positions[Math.floor(Math.random() * positions.length)]
+            // 创造链素
+            const product = reactant.slice(0, position) + 'Q' + reactant.slice(position + 1);
+            const waste = "G"
+            // IO
+            WithdrawStryngByRole(catalyst, "reactant");
+            WithdrawStryngByRole(catalyst, "appendix");
+            TransferStryngByRole(catalyst, "product", product);
+            TransferStryngByRole(catalyst, "waste", waste);
+            return true; // 成功
         }
     },
     trash: (catalyst) => {

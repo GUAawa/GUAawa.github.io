@@ -4,6 +4,7 @@ var MainMenu = {name: "MainMenu" , children: [
             {name: "Vortexer", function: () => setInteractStateBuilding("Vortexer")},
             {name: "Repulser", function: () => setInteractStateBuilding("Repulser")},
             {name: "Slide", function: () => setInteractStateBuilding("Slide")},
+            {name: "Filter", function: () => setInteractStateBuilding("Filter")},
         ]},
         {name: "Beds", children: [
             // 自动注册

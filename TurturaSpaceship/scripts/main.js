@@ -21,6 +21,7 @@ function handleInput() {
     if (KeyboardInput['1']) setInteractStateBuilding("Vortexer");
     if (KeyboardInput['2']) setInteractStateBuilding("Repulser");
     if (KeyboardInput['3']) setInteractStateBuilding("Slide");
+    if (KeyboardInput['4']) setInteractStateBuilding("Filter");
     
     if (KeyboardInput['shift']){
         for (const key in KeyboardInput){
