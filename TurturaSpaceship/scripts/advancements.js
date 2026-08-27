@@ -102,7 +102,7 @@ var advancements = {
         description: "提交 100 个 QG 。你用筛选器扔掉了所有保护失败的链素，还是说你把它们回收了？",
         stryng_requirement: {
             stryng: "QG",
-            amount: 100,
+            amount: 300,
         },
         on_complete: () => {
             globalThis.ActivateAdvancement("足够火热");
